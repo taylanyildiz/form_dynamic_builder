@@ -1,0 +1,211 @@
+import 'package:flutter/material.dart';
+import '/core/constants/constants.dart';
+import '/core/widgets/widgets.dart';
+import '/core/models/models.dart';
+
+class FormDynamicFieldExpanded extends StatelessWidget {
+  const FormDynamicFieldExpanded({
+    super.key,
+    required this.field,
+    required this.onChanged,
+  });
+
+  /// Form Dynamic field object
+  final FormDynamicField field;
+
+  /// Field when changed
+  final void Function(FormDynamicField field)? onChanged;
+
+  String get id => field.id;
+  String get labelText => field.labelText ?? "";
+  String get hintText => field.hintText ?? "";
+  String? get value => field.value;
+  bool get mandantory => field.mandantory;
+  FormDynamicFieldType get type => field.type;
+  DateTimePickerMode get pickerMode => field.pickerMode;
+  bool get multiSelectable => field.multiSelectable;
+  List<FormDynamicFieldOption> get options => field.options;
+  List<FormDynamicFieldOption> get selecteds => field.selecteds;
+  FormDynamicFieldOption get selected => field.selected;
+
+  bool get isHeaderType => type == FormDynamicFieldType.header;
+  bool get isCheckboxType => type == FormDynamicFieldType.checkbox;
+  bool get isSelectType => type == FormDynamicFieldType.select;
+  bool get isTextType => type == FormDynamicFieldType.text;
+  bool get isDateTimeType => type == FormDynamicFieldType.dateTime;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isHeaderType) return _buildLabelTextField;
+    return ColumnSeparator(
+      separatorBuilder: (index) => const SizedBox(height: 3.0),
+      children: [
+        _buildRequiredField,
+        _buildLabelTextField,
+        _buildHintTextField,
+        if (isDateTimeType) _buildPickerMode,
+        if (isDateTimeType) _buildDateTimePicker,
+        if (isTextType) _buildTextValueField,
+        if (isCheckboxType || isSelectType) _buildOptions,
+      ],
+    );
+  }
+
+  Widget get _buildRequiredField {
+    return Label(
+      label: "Required",
+      child: Checkbox(
+        value: mandantory,
+        onChanged: (value) => onChanged?.call(field.copyWith(mandantory: value)),
+      ),
+    );
+  }
+
+  Widget get _buildLabelTextField {
+    return Label(
+      label: "Label Text",
+      child: TextCustomField(
+        initialValue: labelText,
+        onChange: (input) => onChanged?.call(field.copyWith(labelText: input)),
+      ),
+    );
+  }
+
+  Widget get _buildHintTextField {
+    return Label(
+      label: "Hint Text",
+      child: TextCustomField(
+        initialValue: hintText,
+        onChange: (input) => onChanged?.call(field.copyWith(hintText: input)),
+      ),
+    );
+  }
+
+  Widget get _buildPickerMode {
+    return Label(
+      label: "Type",
+      child: DropDownField(
+        items: DateTimePickerMode.values,
+        value: pickerMode,
+        onChanged: (value) {
+          onChanged?.call(field.copyWith(pickerMode: value?.index));
+        },
+        itemBuilder: (value) => value?.title,
+      ),
+    );
+  }
+
+  Widget get _buildDateTimePicker {
+    return Label(
+      label: "Value",
+      child: TextDateTimeField(
+        mode: pickerMode,
+        initialDate: value,
+        onChanged: (date) {
+          onChanged?.call(field.copyWith(value: date));
+        },
+      ),
+    );
+  }
+
+  Widget get _buildTextValueField {
+    return Label(
+      label: "Value",
+      child: TextCustomField(
+        initialValue: value,
+        onChange: (input) => onChanged?.call(field.copyWith(value: input)),
+      ),
+    );
+  }
+
+  Widget get _buildOptions {
+    return ColumnSeparator(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      separatorBuilder: (index) => const SizedBox(height: 3.0),
+      children: [
+        if (isSelectType)
+          Label(
+            label: "",
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              controlAffinity: ListTileControlAffinity.leading,
+              value: multiSelectable,
+              title: const Text("Allow Multiple Selections"),
+              onChanged: (value) {
+                onChanged?.call(field.copyWith(multiSelectable: value));
+              },
+            ),
+          ),
+        Label(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          label: "Options",
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3.0),
+              side: BorderSide(color: ColorConstants.gray100),
+            ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: (context, index) {
+                final option = options[index];
+                bool selected = selecteds.contains(option);
+                return ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  leading: Checkbox(
+                    onChanged: (selectedValue) {
+                      List<FormDynamicFieldOption> copySelecteds = List.from(selecteds);
+                      if (selectedValue == true) {
+                        if (!multiSelectable) copySelecteds.clear();
+                        copySelecteds.add(option);
+                      }
+                      if (selectedValue == false) {
+                        final removed = copySelecteds.removeAt(selecteds.indexOf(option));
+                        if (!multiSelectable) copySelecteds.add(removed);
+                      }
+                      final value = copySelecteds.map((e) => e.id).toList().join(',');
+                      onChanged?.call(field.copyWith(value: value));
+                    },
+                    value: selected,
+                  ),
+                  title: TextCustomField(
+                    key: ValueKey("Field-Option-${option.id}"),
+                    initialValue: option.value,
+                    onChange: (input) {
+                      List<FormDynamicFieldOption> copyOptions = List.from(options);
+                      copyOptions[index] = copyOptions[index].copyWith(value: input);
+                      onChanged?.call(field.copyWith(options: copyOptions));
+                    },
+                  ),
+                  trailing: (() {
+                    if ((isCheckboxType && options.length <= 1) || (isSelectType && options.length <= 2) || selected) return null;
+                    return IconButton(
+                      onPressed: () {
+                        List<FormDynamicFieldOption> copyOptions = List.from(options);
+                        copyOptions.removeAt(index);
+                        onChanged?.call(field.copyWith(options: copyOptions));
+                      },
+                      color: Colors.red,
+                      icon: const Icon(Icons.close),
+                    );
+                  }()),
+                );
+              },
+            ),
+          ),
+        ),
+        PrimaryButton(
+          minimumSize: Size.zero,
+          padding: const EdgeInsets.all(12.0),
+          onPressed: () {
+            onChanged?.call(field.copyWith(options: [...options, FormDynamicFieldOption()]));
+          },
+          title: "Add Option",
+          icon: const Icon(Icons.add),
+        ),
+      ],
+    );
+  }
+}
