@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:form_generator/core/models/form_dynamic_permission.dart';
 import '../utils/enum_helper.dart';
 import '/core/models/models.dart';
 import '../utils/functions.dart';
@@ -55,7 +56,7 @@ class FormDynamicField with EquatableMixin {
 
   /// Field permission
   /// default [FormDynamicPermission.both]
-  final FormDynamicPermission permission;
+  final int permissionType;
 
   /// Depends on [fieldType] is date
   /// default [DateTimePickerMode.dateAndTime]
@@ -96,6 +97,10 @@ class FormDynamicField with EquatableMixin {
   /// have [pickerModeType]
   DateTimePickerMode get pickerMode => dateTimePickerMode(pickerModeType);
 
+  /// Permission type enum
+  ///
+  FormDynamicPermission get permission => FormDynamicPermission.values.firstWhere((e) => e.index == permissionType);
+
   FormDynamicField({
     String? id,
     int? fieldType,
@@ -112,7 +117,7 @@ class FormDynamicField with EquatableMixin {
     this.pickerModeType,
     List<FormDynamicFieldOption>? options,
     bool? canEdit,
-    FormDynamicPermission? permission,
+    int? permissionType,
     bool? expanded,
   })  : id = id ?? uuid,
         fieldType = fieldType ?? FormDynamicFieldType.text.type,
@@ -122,7 +127,7 @@ class FormDynamicField with EquatableMixin {
         multiSelectable = multiSelectable ?? false,
         options = options ?? const <FormDynamicFieldOption>[],
         canEdit = canEdit ?? true,
-        permission = permission ?? FormDynamicPermission.both,
+        permissionType = permissionType ?? FormDynamicPermission.both.index,
         expanded = expanded ?? false;
 
   FormDynamicField copyWith(
@@ -141,7 +146,7 @@ class FormDynamicField with EquatableMixin {
       int? pickerMode,
       List<FormDynamicFieldOption>? options,
       bool? canEdit,
-      FormDynamicPermission? permission,
+      int? permissionType,
       bool? expanded}) {
     return FormDynamicField(
       id: id ?? this.id,
@@ -159,7 +164,7 @@ class FormDynamicField with EquatableMixin {
       pickerModeType: pickerMode ?? pickerModeType,
       options: options ?? this.options,
       canEdit: canEdit ?? this.canEdit,
-      permission: permission ?? this.permission,
+      permissionType: permissionType ?? this.permissionType,
       expanded: expanded ?? this.expanded,
     );
   }
@@ -195,4 +200,23 @@ class FormDynamicField with EquatableMixin {
         multiSelectable,
         options,
       ];
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "field_type": fieldType,
+        "seq": seq,
+        "label_text": labelText,
+        "hint_text": hintText,
+        "value": value,
+        "max_length": maxLength,
+        "min_length": minLength,
+        "max_lines": maxLines,
+        "min_lines": minLines,
+        "mandantory": mandantory,
+        "multi_selectable": multiSelectable,
+        "can_edit": canEdit,
+        "permission_type": permissionType,
+        "picker_mode_type": pickerModeType,
+        "options": options.map((e) => e.toJson()).toList(),
+      };
 }

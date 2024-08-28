@@ -9,6 +9,7 @@ class FormAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       toolbarHeight: 200,
+      stretch: true,
       flexibleSpace: FlexibleSpaceBar(
         background: BlurCard(
           color: Colors.transparent,

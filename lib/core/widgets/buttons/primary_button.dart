@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants/constants.dart';
+
 class PrimaryButtonController {
   // Loading start
   void Function()? _onLoading;
@@ -127,7 +129,7 @@ class _PrimaryButtonState extends State<PrimaryButton> {
                   if (!states.contains(WidgetState.disabled)) {
                     return widget.backgroundColor;
                   }
-                  return null;
+                  return ColorConstants.gray300;
                 })
               : null,
           foregroundColor: _foregroundColor,

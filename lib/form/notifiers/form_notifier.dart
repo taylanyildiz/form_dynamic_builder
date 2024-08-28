@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '/core/dialog/app_dialog.dart';
+import '/form/pages/pages.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
 import '/core/models/models.dart';
@@ -14,11 +16,6 @@ class FormNotifier extends Notifier<FormDynamic> {
     final fieldPreview = ref.read(formFieldPreviewProvider);
     final fields = [...state.fields];
     int index = fieldPreview?.dragIndex ?? (fields.isEmpty ? 0 : fields.length);
-
-    // assert(
-    //   fieldPreview == null || fieldPreview.dragIndex != -1,
-    //   "Preview Drag Index Cannot be [-1]",
-    // );
 
     field ??= fieldPreview?.field;
     if (field == null) return;
@@ -44,6 +41,7 @@ class FormNotifier extends Notifier<FormDynamic> {
     state = state.copyWith(fields: fields);
   }
 
+  /// Copied item then insert last
   void onCopyField(FormDynamicField field) {
     state = state.copyWith(
       fields: [
@@ -53,12 +51,14 @@ class FormNotifier extends Notifier<FormDynamic> {
     );
   }
 
+  /// Delete field item
   void onDeleteField(FormDynamicField field) {
     List<FormDynamicField> fields = [...state.fields];
     fields = fields.where((e) => e.id != field.id).toList();
     state = state.copyWith(fields: fields);
   }
 
+  /// Change order
   void onChangeOrder(FormDynamicField field, index, Order order) {
     final fields = [...state.fields];
     if ((index == 0 && order == Order.up) || (index == state.fields.length - 1 && order == Order.down)) return;
@@ -72,18 +72,33 @@ class FormNotifier extends Notifier<FormDynamic> {
     state = state.copyWith(fields: fields);
   }
 
+  /// Save fields
   void Function()? onSave() {
-    return null;
+    if (state.fields.isEmpty) return null;
+    return () {};
   }
 
+  /// Display json code
   void Function()? onDisplay() {
-    return null;
+    if (state.fields.isEmpty) return null;
+    return () {
+      AppDialog.openDialog(const FormJsonDialog());
+    };
   }
 
+  /// Clear all
   void Function()? onClear() {
     if (state.fields.isEmpty) return null;
     return () {
       state = state.copyWith(fields: []);
     };
+  }
+
+  /// Scroll to dragged index
+  void jumpToScroll(int index) {
+    final scrollController = ref.read(formScrollProvider);
+    if (scrollController.hasClients && state.fields.length > 1) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent / (state.fields.length - 1) * index);
+    }
   }
 }

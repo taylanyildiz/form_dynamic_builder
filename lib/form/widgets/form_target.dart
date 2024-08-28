@@ -12,10 +12,12 @@ class FormTarget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fields = ref.watch(formNotifierProvider.select((e) => e.fields));
+    final scrollController = ref.read(formScrollProvider);
     if (fields.isEmpty) return _buildEmptyTarget;
     return ClipRRect(
       borderRadius: BorderRadius.circular(3.0),
       child: CustomScrollView(
+        controller: scrollController,
         slivers: [
           _buildTargetList(fields),
           _buildTargetFilled(fields),

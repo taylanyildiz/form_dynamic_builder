@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '/core/utils/functions.dart';
 import '/core/constants/constants.dart';
-import 'widgets/widgets.dart';
 
 abstract final class AppDialog {
   /// Show adaptive dialog
@@ -22,22 +21,8 @@ abstract final class AppDialog {
       useSafeArea: true,
       barrierColor: barrierColor,
       barrierDismissible: barrierDismissible,
-      builder: (context) => Transform.translate(offset: anchor!, child: dialog),
+      builder: (context) => dialog,
       anchorPoint: anchor,
     );
-  }
-
-  /// Confirmation dialog
-  /// returns boolean value
-  ///
-  /// - if confirm action click [true] otherwise [false]
-  static Future<bool> confirm({Key? key, required String titleText, String? contentText}) async {
-    final result = await openDialog(
-        key: key,
-        ConfirmDialog(
-          titleText: titleText,
-          contentText: contentText,
-        ));
-    return result ?? false;
   }
 }

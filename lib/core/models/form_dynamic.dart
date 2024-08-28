@@ -32,4 +32,9 @@ class FormDynamic {
       dependencies: dependencies ?? this.dependencies,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "fields": fields.map((e) => e.toJson()).toList(),
+      };
 }

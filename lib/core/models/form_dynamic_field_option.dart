@@ -28,4 +28,9 @@ class FormDynamicFieldOption with EquatableMixin {
   String toString() {
     return "$id -> Value: $value";
   }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "value": value,
+      };
 }

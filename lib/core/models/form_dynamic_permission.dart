@@ -1,12 +1,22 @@
 enum FormDynamicPermission {
-  none(0),
-  mobile(1),
-  web(2),
-  both(3),
+  /// No permission from any platfom
+  ///
+  none,
+
+  /// Only pemrission from mobile
+  ///
+  mobile,
+
+  /// Only pemrission from web
+  ///
+  web,
+
+  /// Only pemrission from both [mobile] and [web]
+  ///
+  both,
   ;
 
-  final int type;
-  const FormDynamicPermission(this.type);
+  const FormDynamicPermission();
 
   String get title {
     return switch (this) {
