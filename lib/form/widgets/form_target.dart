@@ -44,7 +44,6 @@ class FormTarget extends ConsumerWidget {
   /// Target list
   Widget _buildTargetList(List<FormDynamicField> fields) {
     return SliverList.separated(
-      addAutomaticKeepAlives: false,
       itemCount: fields.length,
       separatorBuilder: (context, index) => const SizedBox(height: 3.0),
       itemBuilder: (context, index) {

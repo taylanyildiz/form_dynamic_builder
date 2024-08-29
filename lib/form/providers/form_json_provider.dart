@@ -9,7 +9,7 @@ import 'form_notifier_provider.dart';
 final formJsonProvider = Provider.autoDispose<String>((ref) {
   FormDynamic form = ref.read(formNotifierProvider);
   form = form.copyWith(
-    fields: form.fields.map((e) => ref.read(formFieldProvider(e.id))).toList(),
+    fields: form.fields.asMap().entries.map((e) => ref.read(formFieldProvider(e.value.id)).copyWith(seq: e.key)).toList(),
   );
   final json = form.toJson();
   return const JsonEncoder.withIndent('  ').convert(json);
