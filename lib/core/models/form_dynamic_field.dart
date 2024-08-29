@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:form_generator/core/models/form_dynamic_permission.dart';
 import '../utils/enum_helper.dart';
 import '/core/models/models.dart';
 import '../utils/functions.dart';

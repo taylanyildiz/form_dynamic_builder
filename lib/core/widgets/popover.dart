@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '/core/widgets/widgets.dart';
 import '/core/utils/functions.dart';
@@ -24,6 +26,7 @@ class Popover extends StatefulWidget {
     super.key,
     required this.builder,
     required this.pop,
+    this.duration,
   }) : confirmDelegate = null;
 
   Popover.confirm({
@@ -32,6 +35,7 @@ class Popover extends StatefulWidget {
     required String title,
     required String description,
     required Function(bool result) onChanged,
+    this.duration,
   })  : pop = null,
         confirmDelegate = PopOverConfirmDelegate(title, description, onChanged);
 
@@ -46,6 +50,9 @@ class Popover extends StatefulWidget {
   /// Confirm delegate popover
   final PopOverConfirmDelegate? confirmDelegate;
 
+  /// popover duration
+  final Duration? duration;
+
   @override
   State<Popover> createState() => _PopoverState();
 }
@@ -57,14 +64,30 @@ class _PopoverState extends State<Popover> {
   /// Key help to display
   final GlobalKey _key = GlobalKey();
 
+  /// Popover duration
+  Timer? timer;
+  Duration? duration;
+
   /// Overlay entry
   OverlayEntry? entry;
   bool isOpen = false;
 
   @override
   void initState() {
+    duration = widget.duration;
     confirmDelegate = widget.confirmDelegate;
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant Popover oldWidget) {
+    if (oldWidget.duration != widget.duration) duration = widget.duration;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _open() {
+    open();
+    if (duration != null) Future.delayed(duration!).then((_) => close());
   }
 
   void open() {
@@ -85,7 +108,7 @@ class _PopoverState extends State<Popover> {
 
   @override
   Widget build(BuildContext context) {
-    final child = widget.builder.call(open);
+    final child = widget.builder.call(_open);
     return KeyedSubtree(
       key: _key,
       child: IgnorePointer(

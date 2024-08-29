@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_generator/core/widgets/widgets.dart';
 import '../providers/providers.dart';
 
 class FormJsonDialog extends ConsumerWidget {
@@ -28,7 +29,7 @@ class FormJsonDialog extends ConsumerWidget {
                 height: double.infinity,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(10.0),
-                  child: Text(
+                  child: SelectableText(
                     jsonString,
                     style: const TextStyle(color: Colors.black),
                   ),
@@ -47,13 +48,30 @@ class FormJsonDialog extends ConsumerWidget {
   }
 
   Widget _buildCopyButton(String data) {
-    return Container(
-      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-      child: IconButton(
-        onPressed: () {
-          Clipboard.setData(ClipboardData(text: data));
-        },
-        icon: const Icon(Icons.copy),
+    return Popover(
+      duration: const Duration(seconds: 1),
+      pop: Card(
+        margin: const EdgeInsets.only(top: 6.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+        elevation: 5.0,
+        shadowColor: Colors.black54,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Copied",
+            style: TextStyle(color: Colors.black, fontSize: 12.0),
+          ),
+        ),
+      ),
+      builder: (open) => Container(
+        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: IconButton(
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: data));
+            open();
+          },
+          icon: const Icon(Icons.copy),
+        ),
       ),
     );
   }
