@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:form_generator/core/widgets/widgets.dart';
+import '/core/widgets/widgets.dart';
 import '../providers/providers.dart';
 
 class FormJsonDialog extends ConsumerWidget {

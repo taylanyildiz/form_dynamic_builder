@@ -1,5 +1,5 @@
-name: form_generator
-description: "Form Generator Flutter App"
+name: form_dynamic_builder
+description: "Form Dynamic Builder Web Application"
 publish_to: 'taylanyildz@outlook.com'
 version: 1.0.0+1
 
@@ -34,5 +34,4 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/icons/
     - assets/svgs/

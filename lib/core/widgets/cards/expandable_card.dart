@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:form_generator/core/widgets/popover.dart';
+import '/core/widgets/popover.dart';
 import '/core/constants/constants.dart';
 
 class ExpandableCard extends StatefulWidget {
