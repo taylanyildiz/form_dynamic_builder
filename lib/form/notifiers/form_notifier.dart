@@ -75,7 +75,9 @@ class FormNotifier extends Notifier<FormDynamic> {
   /// Save fields
   void Function()? onSave() {
     if (state.fields.isEmpty) return null;
-    return () {};
+    return () {
+      ref.read(formPageProvider).jumpToPage(FormPages.saved.index);
+    };
   }
 
   /// Display json code

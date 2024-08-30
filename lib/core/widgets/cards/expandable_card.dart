@@ -143,7 +143,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
     final textTheme = Theme.of(context).textTheme;
     return Text(
       widget.title,
-      style: widget.titleOnly ? textTheme.headlineMedium : textTheme.labelLarge,
+      style: widget.titleOnly ? textTheme.titleLarge : textTheme.labelLarge,
     );
   }
 

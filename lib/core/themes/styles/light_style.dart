@@ -20,7 +20,7 @@ class LightStyle extends TextTheme {
 
   /// Input field hint style
   static TextStyle get hintStyle => GoogleFonts.inter(
-        fontSize: 14.0,
+        fontSize: 12.0,
         color: ColorConstants.gray700.withOpacity(.7),
       );
 
@@ -72,23 +72,23 @@ class LightStyle extends TextTheme {
 
   @override
   TextStyle? get headlineLarge => GoogleFonts.inter(
-        fontSize: 22.0,
+        fontSize: 30.0,
         letterSpacing: -.25,
-        color: ColorConstants.tc700,
-        fontWeight: FontWeight.w500,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
       );
 
   @override
   TextStyle? get headlineMedium => GoogleFonts.inter(
-        fontSize: 20.0,
-        letterSpacing: .15,
-        color: Colors.black,
-        fontWeight: FontWeight.w500,
+        fontSize: 30.0,
+        letterSpacing: -.25,
+        color: Colors.white,
+        fontWeight: FontWeight.w100,
       );
 
   @override
   TextStyle? get headlineSmall => GoogleFonts.inter(
-        fontSize: 11.0,
+        fontSize: 20.0,
         letterSpacing: .1,
         color: Colors.black,
         fontWeight: FontWeight.w500,
@@ -96,7 +96,7 @@ class LightStyle extends TextTheme {
 
   @override
   TextStyle? get labelLarge => GoogleFonts.inter(
-        fontSize: 14.0,
+        fontSize: 13.0,
         letterSpacing: .1,
         color: ColorConstants.gray800,
         fontWeight: FontWeight.w600,
@@ -120,7 +120,7 @@ class LightStyle extends TextTheme {
 
   @override
   TextStyle? get bodyLarge => GoogleFonts.inter(
-        fontSize: 16.0,
+        fontSize: 13.0,
         letterSpacing: .5,
         color: ColorConstants.gray600,
         fontWeight: FontWeight.w400,
@@ -144,7 +144,7 @@ class LightStyle extends TextTheme {
 
   @override
   TextStyle? get titleLarge => GoogleFonts.inter(
-        color: ColorConstants.tc700,
+        color: Colors.black,
         fontSize: 16.0,
         fontWeight: FontWeight.w600,
         letterSpacing: .25,

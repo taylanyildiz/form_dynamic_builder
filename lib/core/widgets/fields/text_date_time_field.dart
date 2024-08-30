@@ -7,6 +7,7 @@ import '/core/widgets/widgets.dart';
 class TextDateTimeField extends StatefulWidget {
   const TextDateTimeField({
     super.key,
+    this.mandantory = false,
     this.labelText,
     this.hintText,
     this.initialDate,
@@ -17,6 +18,9 @@ class TextDateTimeField extends StatefulWidget {
     FloatingLabelBehavior? floatingLabelBehavior,
   })  : mode = mode ?? DateTimePickerMode.dateAndTime,
         floatingLabelBehavior = floatingLabelBehavior ?? FloatingLabelBehavior.always;
+
+  /// Is required field
+  final bool mandantory;
 
   /// Label text
   final String? labelText;
@@ -151,6 +155,7 @@ class _TextDateTimeFieldState extends State<TextDateTimeField> {
       link: _layerLink,
       key: fieldKey,
       child: TextCustomField(
+        mandantory: widget.mandantory,
         readOnly: true,
         onTap: _onTapField,
         controller: controller,

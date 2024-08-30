@@ -4,3 +4,4 @@ export 'text_switch_field.dart';
 export 'drop_down_field.dart';
 export 'checkbox_custom.dart';
 export 'text_date_time_field.dart';
+export 'checkbox_group.dart';

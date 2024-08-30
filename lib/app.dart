@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '/core/constants/constants.dart';
 import '/core/themes/themes.dart';
-import 'form/pages/pages.dart';
+import 'form/pages/form_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
