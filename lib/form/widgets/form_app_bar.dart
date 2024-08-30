@@ -29,9 +29,8 @@ class FormAppBar extends StatelessWidget {
             Positioned(
               left: 150.0,
               child: SvgPicture.asset(
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
+
+                // fit: BoxFit.cover,
                 "assets/svgs/videntium_logo.svg",
               ),
             ),
