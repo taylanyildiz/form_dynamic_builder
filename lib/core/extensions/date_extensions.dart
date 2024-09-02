@@ -39,4 +39,14 @@ extension DateExtension on DateTime? {
       DateTimePickerMode.dateAndTime => toString().split(".").first,
     };
   }
+
+  /// Update time only
+  DateTime? updateTime(DateTime? time) {
+    return this?.copyWith(hour: time?.hour, minute: time?.minute, second: time?.second, millisecond: time?.millisecond);
+  }
+
+  /// Update date only
+  DateTime? updateDate(DateTime? date) {
+    return this?.copyWith(day: date?.day, year: date?.year, month: date?.month);
+  }
 }

@@ -12,7 +12,7 @@ class App extends StatelessWidget {
       locale: const Locale('en'),
       navigatorKey: NavigatorConstants.navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'Form Generator App',
+      title: 'Form Dynamic Builder',
       theme: LightTheme.theme,
       darkTheme: DarkTheme.theme,
       themeMode: ThemeMode.light,

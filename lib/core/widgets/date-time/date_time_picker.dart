@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:form_dynamic_builder/core/extensions/date_extensions.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DateTimePicker extends StatelessWidget {
@@ -37,10 +38,12 @@ class DateTimePicker extends StatelessWidget {
             backgroundColor: Colors.white,
             maxDate: maxDate,
             minDate: minDate,
+            initialSelectedDate: initialDate,
             selectionMode: DateRangePickerSelectionMode.single,
             onSelectionChanged: (dateRangePickerSelectionChangedArgs) {
               final date = dateRangePickerSelectionChangedArgs.value as DateTime?;
-              onChanged?.call(date);
+              DateTime? dateTime = initialDate.updateDate(date);
+              onChanged?.call(dateTime ?? date);
             },
           ),
         ),
@@ -54,7 +57,10 @@ class DateTimePicker extends StatelessWidget {
             ),
             initialDateTime: initialDate ?? maxDate,
             mode: CupertinoDatePickerMode.time,
-            onDateTimeChanged: (date) => onChanged?.call(date),
+            onDateTimeChanged: (date) {
+              DateTime? dateTime = initialDate.updateTime(date);
+              onChanged?.call(dateTime ?? date);
+            },
           ),
         ),
       ],

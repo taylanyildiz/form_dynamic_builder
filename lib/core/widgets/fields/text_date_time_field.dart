@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import '/core/extensions/extensions.dart';
 import '/core/constants/constants.dart';
 import '/core/models/models.dart';
@@ -68,14 +69,14 @@ class _TextDateTimeFieldState extends State<TextDateTimeField> {
   String get text => controller.text;
 
   /// Initial date
-  DateTime? initialDate;
+  ValueNotifier<DateTime?> initialDate = ValueNotifier(null);
 
   bool get _onlyDate => widget.mode == DateTimePickerMode.date;
   bool get _onlyTime => widget.mode == DateTimePickerMode.time;
 
   @override
   void initState() {
-    initialDate = widget.initialDate?.toModeDate(widget.mode);
+    initialDate.value = widget.initialDate?.toModeDate(widget.mode);
     controller = TextEditingController(text: _dateToText());
     super.initState();
   }
@@ -83,15 +84,17 @@ class _TextDateTimeFieldState extends State<TextDateTimeField> {
   @override
   void didUpdateWidget(covariant TextDateTimeField oldWidget) {
     if (widget.initialDate != oldWidget.initialDate || widget.mode != oldWidget.mode) {
-      initialDate = widget.initialDate?.toModeDate(widget.mode);
-      controller.text = _dateToText();
+      SchedulerBinding.instance.scheduleFrameCallback((_) {
+        initialDate.value = widget.initialDate?.toModeDate(widget.mode);
+        controller.text = _dateToText();
+      });
     }
     super.didUpdateWidget(oldWidget);
   }
 
   /// Convert date to text
   /// display on field
-  String _dateToText() => initialDate.locale(onlyDate: _onlyDate, onlyTime: _onlyTime) ?? "";
+  String _dateToText() => initialDate.value.locale(onlyDate: _onlyDate, onlyTime: _onlyTime) ?? "";
 
   /// Tap field
   /// to display picker
@@ -145,7 +148,7 @@ class _TextDateTimeFieldState extends State<TextDateTimeField> {
 
   void _onChanged(DateTime? dateTime) {
     final date = dateTime.toModeString(widget.mode);
-    controller.text = date ?? "";
+    controller.text = _dateToText();
     widget.onChanged?.call(date);
   }
 
@@ -184,32 +187,36 @@ class _TextDateTimeFieldState extends State<TextDateTimeField> {
   }
 
   Widget get _buildPicker {
-    Widget picker = switch (widget.mode) {
-      DateTimePickerMode.date => DatePicker(
-          maxDate: widget.maxDate,
-          minDate: widget.minDate,
-          initialDate: initialDate,
-          onChanged: _onChanged,
-        ),
-      DateTimePickerMode.time => TimePicker(
-          maxDate: widget.maxDate,
-          minDate: widget.minDate,
-          initialDate: initialDate,
-          onChanged: _onChanged,
-        ),
-      DateTimePickerMode.dateAndTime => DateTimePicker(
-          maxDate: widget.maxDate,
-          minDate: widget.minDate,
-          initialDate: initialDate,
-          onChanged: _onChanged,
-        ),
-    };
+    Widget picker(DateTime? initialDate) => switch (widget.mode) {
+          DateTimePickerMode.date => DatePicker(
+              maxDate: widget.maxDate,
+              minDate: widget.minDate,
+              initialDate: initialDate,
+              onChanged: _onChanged,
+            ),
+          DateTimePickerMode.time => TimePicker(
+              maxDate: widget.maxDate,
+              minDate: widget.minDate,
+              initialDate: initialDate,
+              onChanged: _onChanged,
+            ),
+          DateTimePickerMode.dateAndTime => DateTimePicker(
+              maxDate: widget.maxDate,
+              minDate: widget.minDate,
+              initialDate: initialDate,
+              onChanged: _onChanged,
+            ),
+        };
     return Card(
       elevation: 5.0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: ColorConstants.gray400),
       ),
-      child: picker,
+      child: ValueListenableBuilder(
+          valueListenable: initialDate,
+          builder: (context, value, child) {
+            return picker(value);
+          }),
     );
   }
 }
