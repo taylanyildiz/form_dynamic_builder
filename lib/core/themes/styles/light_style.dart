@@ -12,10 +12,10 @@ class LightStyle extends TextTheme {
 
   /// Text button style
   static TextStyle get textButtonStyle => GoogleFonts.inter(
-        color: ColorConstants.gray600,
-        fontWeight: FontWeight.w500,
+        color: Colors.black,
+        fontWeight: FontWeight.w400,
         letterSpacing: .25,
-        fontSize: 13.0,
+        fontSize: 12.0,
       );
 
   /// Input field hint style

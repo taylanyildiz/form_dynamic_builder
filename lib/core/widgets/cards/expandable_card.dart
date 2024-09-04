@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/core/widgets/popover.dart';
+import '../widgets.dart';
 import '/core/constants/constants.dart';
 
 class ExpandableCard extends StatefulWidget {
@@ -152,38 +152,52 @@ class _ExpandableCardState extends State<ExpandableCard> {
       Popover.confirm(
         title: "Warning!",
         description: "Are you sure want to remove this field?",
-        onChanged: (result) {
+        onTap: (result) {
           if (!result) return;
           widget.onDelete?.call();
         },
-        builder: (open) => IconButton(
-          hoverColor: const Color.fromARGB(88, 244, 54, 54),
+        builder: (open) => IconCustomButton(
+          color: Colors.grey,
+          hoveredColor: const Color.fromARGB(88, 244, 54, 54),
+          hoveredForegroundColor: Colors.white,
           onPressed: open,
           icon: const Icon(Icons.close),
         ),
       ),
-      IconButton(
-        hoverColor: const Color.fromARGB(124, 244, 244, 54),
+      IconCustomButton(
+        hoveredColor: const Color.fromARGB(124, 244, 244, 54),
+        hoveredForegroundColor: Colors.white,
+        color: Colors.grey,
         onPressed: () {
           toogle();
           widget.onEdit?.call();
         },
         icon: const Icon(Icons.edit),
       ),
-      IconButton(
-        hoverColor: const Color.fromARGB(114, 111, 244, 54),
+      IconCustomButton(
+        hoveredColor: const Color.fromARGB(114, 111, 244, 54),
+        hoveredForegroundColor: Colors.white,
+        color: Colors.grey,
         onPressed: () {
           widget.onCopy?.call();
         },
         icon: const Icon(Icons.copy),
       ),
-      _buildIconButton(
-        const Icon(Icons.arrow_upward_rounded),
-        () => widget.onChangeOrder?.call(0),
+      IconCustomButton(
+        color: Colors.grey,
+        hoveredForegroundColor: Colors.black,
+        icon: const Icon(Icons.arrow_upward_rounded),
+        onPressed: () {
+          widget.onChangeOrder?.call(0);
+        },
       ),
-      _buildIconButton(
-        const Icon(Icons.arrow_downward_rounded),
-        () => widget.onChangeOrder?.call(1),
+      IconCustomButton(
+        color: Colors.grey,
+        hoveredForegroundColor: Colors.black,
+        icon: const Icon(Icons.arrow_downward_rounded),
+        onPressed: () {
+          widget.onChangeOrder?.call(1);
+        },
       ),
     ];
 
@@ -193,17 +207,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
       alwaysIncludeSemantics: true,
       child: IgnorePointer(
         ignoring: !actions,
-        child: IconButtonTheme(
-          data: IconButtonThemeData(
-            style: Theme.of(context).iconButtonTheme.style?.copyWith(iconColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.hovered)) return Colors.white;
-              return Colors.grey;
-            })),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
         ),
       ),
     );
@@ -219,24 +225,6 @@ class _ExpandableCardState extends State<ExpandableCard> {
       child: TextButton(
         onPressed: toogle,
         child: const Text("Close"),
-      ),
-    );
-  }
-
-  Widget _buildIconButton(Widget icon, void Function() onTap) {
-    return IconButtonTheme(
-      data: IconButtonThemeData(
-        style: Theme.of(context).iconButtonTheme.style?.copyWith(iconColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.hovered)) return Colors.black;
-          return Colors.grey;
-        })),
-      ),
-      child: IconButton(
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        onPressed: onTap,
-        icon: icon,
       ),
     );
   }

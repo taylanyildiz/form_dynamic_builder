@@ -63,15 +63,12 @@ class FormJsonDialog extends ConsumerWidget {
           ),
         ),
       ),
-      builder: (open) => Container(
-        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-        child: IconButton(
-          onPressed: () async {
-            await Clipboard.setData(ClipboardData(text: data));
-            open();
-          },
-          icon: const Icon(Icons.copy),
-        ),
+      builder: (open) => IconButton(
+        onPressed: () async {
+          await Clipboard.setData(ClipboardData(text: data));
+          open();
+        },
+        icon: const Icon(Icons.copy),
       ),
     );
   }

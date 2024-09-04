@@ -79,6 +79,7 @@ abstract class LightTheme {
   /// Elevated primary button theme
   static ElevatedButtonThemeData get _elevatedButtonTheme => ElevatedButtonThemeData(
         style: ButtonStyle(
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.0),
@@ -105,7 +106,8 @@ abstract class LightTheme {
   static TextButtonThemeData get _textButtonTheme => TextButtonThemeData(
         style: ButtonStyle(
           foregroundColor: WidgetStateProperty.resolveWith((states) {
-            return ColorConstants.gray400;
+            if (states.contains(WidgetState.disabled)) return ColorConstants.gray600;
+            return Colors.black;
           }),
           visualDensity: VisualDensity.compact,
           overlayColor: const WidgetStatePropertyAll(Colors.transparent),

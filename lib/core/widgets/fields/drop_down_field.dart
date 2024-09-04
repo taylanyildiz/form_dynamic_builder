@@ -41,17 +41,16 @@ class DropDownField<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.bottomCenter,
       children: [
-        IgnorePointer(
-          ignoring: false,
-          child: TextCustomField(
-            labelText: labelText,
-            hintText: hintText,
-            mandantory: mandantory,
-            floatingLabelBehavior: floatingLabelBehavior,
-            suffixIcon: const Icon(Icons.keyboard_arrow_down),
-            controller: TextEditingController(text: itemBuilder.call(value)),
-          ),
+        TextCustomField(
+          readOnly: true,
+          labelText: labelText,
+          hintText: hintText,
+          mandantory: mandantory,
+          floatingLabelBehavior: floatingLabelBehavior,
+          suffixIcon: const Icon(Icons.keyboard_arrow_down),
+          controller: TextEditingController(text: itemBuilder.call(value)),
         ),
         Opacity(
           opacity: 0.0,

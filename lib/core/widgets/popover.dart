@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '/core/widgets/widgets.dart';
 import '/core/utils/functions.dart';
@@ -12,12 +11,12 @@ class PopOverConfirmDelegate {
   final String description;
 
   /// Changed action
-  final Function(bool result) onChanged;
+  final Function(bool result) onTap;
 
   const PopOverConfirmDelegate(
     this.title,
     this.description,
-    this.onChanged,
+    this.onTap,
   );
 }
 
@@ -27,6 +26,7 @@ class Popover extends StatefulWidget {
     required this.builder,
     required this.pop,
     this.duration,
+    this.onChanged,
   }) : confirmDelegate = null;
 
   Popover.confirm({
@@ -34,10 +34,11 @@ class Popover extends StatefulWidget {
     required this.builder,
     required String title,
     required String description,
-    required Function(bool result) onChanged,
+    required Function(bool result) onTap,
+    this.onChanged,
     this.duration,
   })  : pop = null,
-        confirmDelegate = PopOverConfirmDelegate(title, description, onChanged);
+        confirmDelegate = PopOverConfirmDelegate(title, description, onTap);
 
   /// Child builder popover
   ///
@@ -52,6 +53,10 @@ class Popover extends StatefulWidget {
 
   /// popover duration
   final Duration? duration;
+
+  /// Changed popover overlay
+  /// displaying status
+  final void Function(bool status)? onChanged;
 
   @override
   State<Popover> createState() => _PopoverState();
@@ -96,6 +101,7 @@ class _PopoverState extends State<Popover> {
     entry = OverlayEntry(builder: _buildPopOver);
     overlay.insert(entry!);
     isOpen = true;
+    widget.onChanged?.call(true);
   }
 
   void close([bool confirm = false]) {
@@ -103,7 +109,8 @@ class _PopoverState extends State<Popover> {
     entry?.remove();
     entry = null;
     isOpen = false;
-    confirmDelegate?.onChanged.call(confirm);
+    confirmDelegate?.onTap.call(confirm);
+    widget.onChanged?.call(false);
   }
 
   @override

@@ -8,6 +8,11 @@ class FormDynamicField with EquatableMixin {
   /// generated automaticly by [uuid]
   final String id;
 
+  /// Field display name
+  ///
+  /// default name of [type]
+  final String displayName;
+
   /// Field type
   /// default [FormDynamicFieldType.text]
   final int fieldType;
@@ -72,6 +77,12 @@ class FormDynamicField with EquatableMixin {
   /// default [false]
   final bool expanded;
 
+  /// Field is enabled
+  ///
+  /// default [true]
+  /// If is not [true] must be check has any link to enabled
+  final bool enabled;
+
   /// If field is checkbox or multible select
   /// selecteds items depends on [value]
   List<FormDynamicFieldOption> get selecteds {
@@ -102,6 +113,7 @@ class FormDynamicField with EquatableMixin {
 
   FormDynamicField({
     String? id,
+    String? displayName,
     int? fieldType,
     int? seq,
     this.labelText,
@@ -118,6 +130,7 @@ class FormDynamicField with EquatableMixin {
     bool? canEdit,
     int? permissionType,
     bool? expanded,
+    bool? enabled,
   })  : id = id ?? uuid,
         fieldType = fieldType ?? FormDynamicFieldType.text.type,
         seq = seq ?? 0,
@@ -127,28 +140,34 @@ class FormDynamicField with EquatableMixin {
         options = options ?? const <FormDynamicFieldOption>[],
         canEdit = canEdit ?? true,
         permissionType = permissionType ?? FormDynamicPermission.both.index,
-        expanded = expanded ?? false;
+        expanded = expanded ?? false,
+        enabled = enabled ?? true,
+        displayName = displayName ?? generateFieldName(fieldType);
 
-  FormDynamicField copyWith(
-      {String? id,
-      int? fieldType,
-      int? seq,
-      String? labelText,
-      String? hintText,
-      String? value,
-      int? maxLength,
-      int? minLength,
-      int? maxLines,
-      int? minLines,
-      bool? mandantory,
-      bool? multiSelectable,
-      int? pickerMode,
-      List<FormDynamicFieldOption>? options,
-      bool? canEdit,
-      int? permissionType,
-      bool? expanded}) {
+  FormDynamicField copyWith({
+    String? id,
+    String? displayName,
+    int? fieldType,
+    int? seq,
+    String? labelText,
+    String? hintText,
+    String? value,
+    int? maxLength,
+    int? minLength,
+    int? maxLines,
+    int? minLines,
+    bool? mandantory,
+    bool? multiSelectable,
+    int? pickerMode,
+    List<FormDynamicFieldOption>? options,
+    bool? canEdit,
+    int? permissionType,
+    bool? expanded,
+    bool? enabled,
+  }) {
     return FormDynamicField(
       id: id ?? this.id,
+      displayName: displayName ?? this.displayName,
       fieldType: fieldType ?? this.fieldType,
       seq: seq ?? this.seq,
       labelText: labelText ?? this.labelText,
@@ -165,6 +184,7 @@ class FormDynamicField with EquatableMixin {
       canEdit: canEdit ?? this.canEdit,
       permissionType: permissionType ?? this.permissionType,
       expanded: expanded ?? this.expanded,
+      enabled: enabled ?? this.enabled,
     );
   }
 
@@ -187,6 +207,7 @@ class FormDynamicField with EquatableMixin {
   @override
   List<Object?> get props => [
         id,
+        displayName,
         fieldType,
         seq,
         labelText,
@@ -198,12 +219,15 @@ class FormDynamicField with EquatableMixin {
         mandantory,
         multiSelectable,
         options,
+        enabled,
       ];
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "display_name": displayName,
         "field_type": fieldType,
         "seq": seq,
+        "enabled": enabled,
         "label_text": labelText,
         "hint_text": hintText,
         "value": value,

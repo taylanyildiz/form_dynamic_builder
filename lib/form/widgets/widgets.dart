@@ -10,3 +10,4 @@ export 'draggable_card.dart';
 export 'form_field_target_item.dart';
 export 'form_field_ghost.dart';
 export 'form_dynamic_text_field.dart';
+export 'form_dynamic_field_header.dart';
