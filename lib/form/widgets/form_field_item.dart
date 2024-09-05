@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
-import '/core/widgets/widgets.dart';
 import '/form/widgets/form-fields/form_fields.dart';
 import '/core/data/data.dart';
 import '/core/models/models.dart';
@@ -31,7 +30,7 @@ class FormFieldItem extends ConsumerWidget {
 
     FormDynamicFieldHolder holder = formDynamicFieldHolders.firstWhere((e) => e.type == item.type);
 
-    return ExpandableCard(
+    return FormDynamicExpandableCard(
       key: ValueKey("expanded-field-item-${item.id}"),
       initialExpanded: item.expanded,
       titleOnly: holder.type == FormDynamicFieldType.header,

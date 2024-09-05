@@ -50,9 +50,11 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
                   child: _buildDependType(selectedField.type, selectedField.multiSelectable),
                 ),
               if (selectedField != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: _buildValue(selectedField),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: _buildValue(selectedField),
+                  ),
                 ),
             ],
           ),
@@ -93,11 +95,9 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
   Widget _buildValue(FormDynamicField field) {
     if ([FormDynamicDependencyType.empty, FormDynamicDependencyType.notEMpty, FormDynamicDependencyType.enabled].contains(content.depend)) return const SizedBox.shrink();
 
-    return Expanded(
-      child: TextCustomField(
-        initialValue: content.value,
-        hintText: "Value",
-      ),
+    return TextCustomField(
+      initialValue: content.value,
+      hintText: "Value",
     );
   }
 }

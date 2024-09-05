@@ -27,63 +27,81 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
     final fieldDependency = ref.watch(formFieldDependencyProvider(fieldId));
     final fieldDependencyNotifier = ref.read(formFieldDependencyProvider(fieldId).notifier);
 
-    return ExpandableCustomCard(
-      title: (controller) => Label(
-        label: "Enabled",
-        child: Row(
-          children: [
-            Checkbox(
-              value: field.enabled,
-              onChanged: (value) {
-                fieldNotifier.update((e) => e.copyWith(enabled: value));
-              },
-            ),
-            Tooltip(
-              message: "Link",
-              child: IconCustomButton(
-                onPressed: () {
-                  controller.toggle();
+    return ExpandableCard.builder((controller) {
+      return ExpandableCustomCardDelegate(
+        title: Label(
+          label: "Enabled",
+          child: Row(
+            children: [
+              Checkbox(
+                value: field.enabled,
+                onChanged: (value) {
+                  fieldNotifier.update((e) => e.copyWith(enabled: value));
                 },
-                hoveredColor: const Color.fromARGB(255, 163, 214, 255),
-                icon: const Icon(Icons.add_link),
               ),
-            ),
-          ],
-        ),
-      ),
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                "Dependencies",
-                style: textTheme.titleMedium,
+              Tooltip(
+                message: "Link",
+                child: IconCustomButton(
+                  onPressed: () {
+                    controller.toggle();
+                  },
+                  hoveredColor: const Color.fromARGB(255, 163, 214, 255),
+                  icon: const Icon(Icons.add_link),
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: fieldDependencyNotifier.onClearAll(),
-              child: const Text("Clear all"),
-            ),
-          ],
-        ),
-        _buildDependencies,
-        const SizedBox(height: 10.0),
-        PrimaryButton(
-          minimumSize: Size.zero,
-          onPressed: () => fieldDependencyNotifier.onAddDependency(),
-          backgroundColor: Colors.transparent,
-          foregroundColor: Colors.black,
-          padding: const EdgeInsets.all(7.0),
-          radius: 3.0,
-          borderSide: BorderSide(width: 1.0, color: ColorConstants.gray200),
-          title: "Add Dependency",
-          titleStyle: textTheme.titleMedium?.copyWith(
-            fontSize: 13.0,
+            ],
           ),
-          icon: const Icon(Icons.add),
         ),
-      ],
-    );
+        children: [
+          Card(
+            margin: const EdgeInsets.only(left: 130.0, top: 5.0),
+            color: Colors.white,
+            elevation: 0.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Dependencies",
+                          style: textTheme.titleMedium,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: fieldDependencyNotifier.onClearAll(),
+                        child: const Text("Clear all"),
+                      ),
+                    ],
+                  ),
+                  _buildDependencies,
+                  const SizedBox(height: 10.0),
+                  PrimaryButton(
+                    minimumSize: Size.zero,
+                    onPressed: () => fieldDependencyNotifier.onAddDependency(),
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.all(7.0),
+                    radius: 3.0,
+                    borderSide: BorderSide(width: 1.0, color: ColorConstants.gray200),
+                    title: "Add Dependency",
+                    titleStyle: textTheme.titleMedium?.copyWith(
+                      fontSize: 13.0,
+                    ),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget get _buildDependencies {
