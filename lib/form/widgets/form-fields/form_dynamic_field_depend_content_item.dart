@@ -11,6 +11,7 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
     required this.fieldId,
     required this.content,
     required this.onChanged,
+    required this.onDelete,
   });
 
   /// Target field id
@@ -23,6 +24,9 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
   /// Changed content
   ///
   final void Function(FormFieldDependencyContent content) onChanged;
+
+  /// Delete content
+  final void Function() onDelete;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,7 +64,7 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
           ),
         ),
         IconCustomButton(
-          onPressed: () {},
+          onPressed: onDelete,
           icon: const Icon(Icons.delete_outline),
           color: ColorConstants.gray600,
           hoveredForegroundColor: ColorConstants.r400,

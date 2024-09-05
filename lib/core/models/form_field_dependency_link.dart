@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../utils/functions.dart';
 import 'form_dynamic_dependency_type.dart';
 import 'form_dynamic_logic_type.dart';
@@ -35,6 +34,13 @@ class FormFieldDependencyLink with EquatableMixin {
   /// Dependecy target field id
   final String targetFieldId;
 
+  /// Link card is expanded
+  ///
+  /// default [false]
+  ///
+  /// it's not about dependency link
+  final bool isExpanded;
+
   /// Logic type
   ///
   /// default index of [FormDynamicLogicType.and]
@@ -54,21 +60,25 @@ class FormFieldDependencyLink with EquatableMixin {
 
   FormFieldDependencyLink({
     String? id,
+    bool? isExpanded,
     required this.targetFieldId,
     int? logicType,
     List<FormFieldDependency>? depends,
   })  : id = id ?? uuid,
+        isExpanded = isExpanded ?? false,
         logicType = logicType ?? FormDynamicLogicType.and.index,
         depends = depends ?? const <FormFieldDependency>[];
 
   FormFieldDependencyLink copyWith({
     String? id,
+    bool? isExpanded,
     String? targetFieldId,
     int? logicType,
     List<FormFieldDependency>? depends,
   }) {
     return FormFieldDependencyLink(
       id: id ?? this.id,
+      isExpanded: isExpanded ?? this.isExpanded,
       targetFieldId: targetFieldId ?? this.targetFieldId,
       logicType: logicType ?? this.logicType,
       depends: depends ?? this.depends,

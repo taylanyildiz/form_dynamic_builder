@@ -75,9 +75,9 @@ class ExpandableCard extends StatefulWidget {
         delegate = ExpandableCustomCardDelegate(title: title, children: children),
         tilePadding = tilePadding ?? EdgeInsets.zero;
 
-  const ExpandableCard.builder(
-    this.builder, {
+  const ExpandableCard.builder({
     super.key,
+    required this.builder,
     bool? initiallyExpanded,
     EdgeInsetsGeometry? tilePadding,
     this.childrenPadding,
@@ -127,6 +127,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
   void initState() {
     isExpanded = widget.initiallyExpanded;
     controller = widget.controller ?? ExpansionTileController();
+    controller.expanded = isExpanded;
     super.initState();
   }
 

@@ -10,6 +10,9 @@ class FormFieldDependencyNotifier extends AutoDisposeFamilyNotifier<FormFieldDep
     return depends.firstWhere((e) => e.targetFieldId == arg, orElse: () => defaultLink);
   }
 
+  /// Changed card expanded status
+  void onChangedCardStatus(bool status) => state = state.copyWith(isExpanded: status);
+
   void Function()? onClearAll() {
     if (state.depends.isEmpty) return null;
     return () => state = state.copyWith(depends: []);
@@ -75,5 +78,24 @@ class FormFieldDependencyNotifier extends AutoDisposeFamilyNotifier<FormFieldDep
       depends[dependIndex] = depends[dependIndex].copyWith(contents: contents);
       state = state.copyWith(depends: depends);
     };
+  }
+
+  void onDeleteContent(String dependId, String contentId) {
+    final depends = [...state.depends];
+    int dependIndex = depends.indexWhere((e) => e.id == dependId);
+    if (dependIndex == -1) return;
+
+    final contents = [...depends[dependIndex].contents];
+    if (contents.length <= 1) {
+      // Delete depend
+      depends.removeAt(dependIndex);
+    } else {
+      int contentIndex = contents.indexWhere((e) => e.id == contentId);
+      if (contentIndex == -1) return;
+      contents.removeAt(contentIndex);
+      depends[dependIndex] = depends[dependIndex].copyWith(contents: contents);
+    }
+
+    state = state.copyWith(depends: depends);
   }
 }

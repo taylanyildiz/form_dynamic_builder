@@ -80,7 +80,7 @@ class _FormDynamicExpandableCardState extends State<FormDynamicExpandableCard> {
           },
           tilePadding: const EdgeInsets.only(left: 10),
           childrenPadding: const EdgeInsets.all(4.0),
-          (controller) {
+          builder: (controller) {
             final bool isExpanded = controller.expanded;
             return ExpandableCustomCardDelegate(
               title: Row(
