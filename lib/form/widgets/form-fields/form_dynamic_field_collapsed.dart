@@ -60,12 +60,19 @@ class FormDynamicFieldCollapsed extends StatelessWidget {
           },
         );
       case FormDynamicFieldType.select when !multiSelectable:
-        child = DropDownField<FormDynamicFieldOption>(
+        child = DropdownField<FormDynamicFieldOption>(
           items: options,
           value: selected,
-          itemBuilder: (value) => value?.value,
+          compareBy: (item) => item.id,
+          selectedBuilder: (context, selected) => Text(selected.value),
           onChanged: (item) {
-            onChanged?.call(field.copyWith(value: item?.id));
+            onChanged?.call(field.copyWith(value: item.firstOrNull?.id));
+          },
+          itemBuilder: (_, value, selected) {
+            return ListTile(
+              selected: selected,
+              title: Text(value.value),
+            );
           },
         );
       case FormDynamicFieldType.image:

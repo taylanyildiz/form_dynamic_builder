@@ -102,7 +102,7 @@ class FormFieldDependencyLink with EquatableMixin {
         "id": id,
         "target_field_id": targetFieldId,
         "logic_type": logicType,
-        "depends": depends.map((e) => e.toJson()),
+        "depends": depends.map((e) => e.toJson()).toList(),
       };
 
   @override
@@ -170,7 +170,7 @@ class FormFieldDependency with EquatableMixin {
   Map<String, dynamic> toJson() => {
         "id": id,
         "logic_type": logicType,
-        "contents": contents.map((e) => e.toJson()),
+        "contents": contents.map((e) => e.toJson()).toList(),
       };
 
   @override

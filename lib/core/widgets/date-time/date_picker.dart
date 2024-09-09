@@ -27,6 +27,7 @@ class DatePicker extends StatelessWidget {
     return SfDateRangePicker(
       maxDate: maxDate,
       minDate: minDate,
+      initialSelectedDate: initialDate,
       headerStyle: const DateRangePickerHeaderStyle(
         backgroundColor: Colors.white,
         textStyle: TextStyle(color: Colors.black, fontSize: 14.0),

@@ -26,6 +26,7 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
   final void Function(FormFieldDependencyContent content) onChanged;
 
   /// Delete content
+  ///
   final void Function() onDelete;
 
   @override
@@ -33,6 +34,7 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
     final linkableFields = ref.watch(linkableFieldsProvider(fieldId));
     FormDynamicField? selectedField = linkableFields.firstWhere((e) => e.id == content.fieldId, orElse: () => FormDynamicField(id: "-1"));
     if (selectedField.id == "-1") selectedField = null;
+    // TODO If field deleted
     return Row(
       children: [
         Expanded(
@@ -40,12 +42,20 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
             children: [
               SizedBox(
                 width: 200.0,
-                child: DropDownField<FormDynamicField>(
+                child: DropdownField<FormDynamicField>(
                   hintText: "Field",
-                  onChanged: (item) => onChanged.call(content.copyWith(fieldId: item?.id)),
+                  selectedBuilder: (context, selected) => Text(selected.displayName),
+                  onChanged: (item) {
+                    onChanged.call(content.copyWith(fieldId: item.firstOrNull?.id));
+                  },
                   items: linkableFields,
                   value: selectedField,
-                  itemBuilder: (value) => value?.displayName,
+                  itemBuilder: (_, value, selected) {
+                    return ListTile(
+                      selected: selected,
+                      title: Text(value.displayName),
+                    );
+                  },
                 ),
               ),
               if (selectedField != null)
@@ -77,20 +87,30 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
   Widget _buildDependType(FormDynamicFieldType type, bool multiSelectable) {
     List<FormDynamicDependencyType> dependTypes = switch (type) {
       FormDynamicFieldType.checkbox => [],
+      FormDynamicFieldType.select when !multiSelectable => FormDynamicDependencyType.values.where((e) => ![FormDynamicDependencyType.great.index, FormDynamicDependencyType.less.index, FormDynamicDependencyType.enabled.index].contains(e.index)).toList(),
       FormDynamicFieldType.select when multiSelectable => [FormDynamicDependencyType.contain],
       FormDynamicFieldType.image => [FormDynamicDependencyType.notEMpty, FormDynamicDependencyType.empty],
+      // TODO: Date-time pikcer must contain [FormDynamicDependencyType.contain]
+      // FormDynamicFieldType.dateTime => FormDynamicDependencyType.values.where((e) => ![FormDynamicDependencyType.enabled.index].contains(e.index)).toList(),
       _ => FormDynamicDependencyType.values.where((e) => ![FormDynamicDependencyType.contain.index, FormDynamicDependencyType.enabled.index].contains(e.index)).toList(),
     };
     dependTypes.insert(0, FormDynamicDependencyType.enabled);
     final selected = dependTypes.firstWhere((e) => e == content.depend, orElse: () => dependTypes.first);
+    // TODO If field multiselectable changed
     return SizedBox(
       width: 130.0,
-      child: DropDownField<FormDynamicDependencyType>(
+      child: DropdownField<FormDynamicDependencyType>(
         items: dependTypes,
         value: selected,
-        itemBuilder: (value) => value?.title,
+        selectedBuilder: (context, selected) => Text(selected.title),
         onChanged: (item) {
-          onChanged.call(content.copyWith(dependType: item?.index));
+          onChanged.call(content.copyWith(dependType: item.firstOrNull?.index));
+        },
+        itemBuilder: (_, value, selected) {
+          return ListTile(
+            selected: selected,
+            title: Text(value.title),
+          );
         },
       ),
     );
@@ -98,10 +118,22 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
 
   Widget _buildValue(FormDynamicField field) {
     if ([FormDynamicDependencyType.empty, FormDynamicDependencyType.notEMpty, FormDynamicDependencyType.enabled].contains(content.depend)) return const SizedBox.shrink();
+    final fieldType = field.type;
+    final dependType = content.depend;
 
-    return TextCustomField(
-      initialValue: content.value,
-      hintText: "Value",
-    );
+    return switch (fieldType) {
+      FormDynamicFieldType.text => TextCustomField(
+          hintText: "Value",
+          initialValue: content.value,
+          onChange: (input) {},
+        ),
+      FormDynamicFieldType.dateTime => TextDateTimeField(
+          hintText: "Value",
+          mode: field.pickerMode,
+          onChanged: (dateTime) {},
+        ),
+      FormDynamicFieldType.select => throw UnimplementedError(),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

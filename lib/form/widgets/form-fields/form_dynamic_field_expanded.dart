@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
 import '/core/models/models.dart';
@@ -144,13 +143,19 @@ class FormDynamicFieldExpanded extends StatelessWidget {
   Widget get _buildPickerMode {
     return Label(
       label: "Type",
-      child: DropDownField(
+      child: DropdownField(
         items: DateTimePickerMode.values,
+        selectedBuilder: (context, selected) => Text(selected.title),
         value: pickerMode,
         onChanged: (value) {
-          onChanged?.call(field.copyWith(pickerMode: value?.index));
+          onChanged?.call(field.copyWith(pickerMode: value.firstOrNull?.index));
         },
-        itemBuilder: (value) => value?.title,
+        itemBuilder: (_, value, selected) {
+          return ListTile(
+            selected: selected,
+            title: Text(value.title),
+          );
+        },
       ),
     );
   }

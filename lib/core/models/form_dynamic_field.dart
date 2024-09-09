@@ -99,7 +99,7 @@ class FormDynamicField with EquatableMixin {
   ///
   /// default [FormDynamicFieldType.text]
   FormDynamicFieldType get type => FormDynamicFieldType.values.firstWhere(
-        (e) => e.type == fieldType,
+        (e) => e.index == fieldType,
         orElse: () => FormDynamicFieldType.text,
       );
 
@@ -132,7 +132,7 @@ class FormDynamicField with EquatableMixin {
     bool? expanded,
     bool? enabled,
   })  : id = id ?? uuid,
-        fieldType = fieldType ?? FormDynamicFieldType.text.type,
+        fieldType = fieldType ?? FormDynamicFieldType.text.index,
         seq = seq ?? 0,
         maxLines = maxLines ?? 1,
         mandantory = mandantory ?? false,

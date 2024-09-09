@@ -1,12 +1,12 @@
 import '../models/models.dart';
 
 FormDynamicField get defaultFormHeader => FormDynamicField(
-      fieldType: FormDynamicFieldType.header.type,
+      fieldType: FormDynamicFieldType.header.index,
       labelText: "Header",
     );
 
 FormDynamicField get defaultFormText => FormDynamicField(
-      fieldType: FormDynamicFieldType.text.type,
+      fieldType: FormDynamicFieldType.text.index,
       labelText: "Text Field",
       hintText: "Enter Text",
     );
@@ -15,7 +15,7 @@ FormDynamicField get defaultFormCheckbox {
   final options = [FormDynamicFieldOption(value: "Option 1")];
   return FormDynamicField(
     multiSelectable: true,
-    fieldType: FormDynamicFieldType.checkbox.type,
+    fieldType: FormDynamicFieldType.checkbox.index,
     labelText: "Checkbox",
     value: [options.first.id].join(','),
     options: options,
@@ -23,7 +23,7 @@ FormDynamicField get defaultFormCheckbox {
 }
 
 FormDynamicField get defaultFormDateTime => FormDynamicField(
-      fieldType: FormDynamicFieldType.dateTime.type,
+      fieldType: FormDynamicFieldType.dateTime.index,
       labelText: "Date-Time Field",
       value: DateTime.now().toString().split('.').first,
       pickerModeType: DateTimePickerMode.dateAndTime.index,
@@ -35,7 +35,7 @@ FormDynamicField get defaultFormSelect {
     FormDynamicFieldOption(value: "Option 2"),
   ];
   return FormDynamicField(
-    fieldType: FormDynamicFieldType.select.type,
+    fieldType: FormDynamicFieldType.select.index,
     labelText: "Select",
     value: [options.first.id].join(','),
     options: options,
@@ -44,7 +44,7 @@ FormDynamicField get defaultFormSelect {
 
 FormDynamicField get defaultFromImage {
   return FormDynamicField(
-    fieldType: FormDynamicFieldType.image.type,
+    fieldType: FormDynamicFieldType.image.index,
     options: [FormDynamicFieldOption()],
     labelText: "Image",
     multiSelectable: false,

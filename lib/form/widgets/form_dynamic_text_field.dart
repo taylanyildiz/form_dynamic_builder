@@ -68,12 +68,15 @@ class FormDynamicTextField extends StatelessWidget {
           initialDate: value,
           onChanged: (dateTime) {},
         ),
-      FormDynamicFieldType.select when !multiSelectable => DropDownField(
+      FormDynamicFieldType.select when !multiSelectable => DropdownField(
           items: options,
           value: selected,
           onChanged: (item) {},
-          itemBuilder: (value) {
-            return value?.value;
+          itemBuilder: (context, value, selected) {
+            return ListTile(
+              selected: selected,
+              title: Text(value.value),
+            );
           },
         ),
       FormDynamicFieldType.select => SizedBox(

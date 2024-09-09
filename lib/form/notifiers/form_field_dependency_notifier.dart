@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '/core/models/models.dart';
 
+/// Field dependency notifier
+///
+/// argument represents target field unique id
 class FormFieldDependencyNotifier extends AutoDisposeFamilyNotifier<FormFieldDependencyLink, String> {
   @override
   FormFieldDependencyLink build(String arg) {

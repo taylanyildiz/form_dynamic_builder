@@ -35,7 +35,7 @@ String get uuid => const Uuid().v7();
 /// ```
 String generateRandomKey() {
   final random = Random();
-  int randomNumber = random.nextInt(90000) + 10000; // 10000 ile 99999 arasında sayı üretir.
+  int randomNumber = random.nextInt(90000) + 10000;
   return randomNumber.toString();
 }
 
@@ -43,7 +43,7 @@ String generateRandomKey() {
 ///
 /// by [fieldType] with random [5] digit key
 String generateFieldName(int? fieldType) {
-  final fieldTypeName = FormDynamicFieldType.values.firstWhere((e) => e.type == fieldType, orElse: () => FormDynamicFieldType.text).title;
+  final fieldTypeName = FormDynamicFieldType.values.firstWhere((e) => e.index == fieldType, orElse: () => FormDynamicFieldType.text).title;
   // return "$fieldTypeName-$random";
   return "$fieldTypeName-${generateRandomKey()}";
 }
