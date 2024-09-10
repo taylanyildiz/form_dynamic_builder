@@ -1,8 +1,12 @@
 {
   "hosting": {
-    "site": "form-builder-9a43b",
+    "site": "form-builder-9a43b-c8e4b",
     "public": "build/web",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
