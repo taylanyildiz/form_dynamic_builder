@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import '../utils/enum_helper.dart';
 import '/core/models/models.dart';
@@ -7,6 +8,11 @@ class FormDynamicField with EquatableMixin {
   /// Field id
   /// generated automaticly by [uuid]
   final String id;
+
+  /// Field display name
+  ///
+  /// default name of [type]
+  final String displayName;
 
   /// Field type
   /// default [FormDynamicFieldType.text]
@@ -53,6 +59,12 @@ class FormDynamicField with EquatableMixin {
   /// default [true]
   final bool canEdit;
 
+  /// Field is enabled
+  ///
+  /// default [true]
+  /// If is not [true] must be check has any link to enabled
+  final bool enabled;
+
   /// Field permission
   /// default [FormDynamicPermission.both]
   final int permissionType;
@@ -68,9 +80,18 @@ class FormDynamicField with EquatableMixin {
   /// if [fieldType] is [select] or [checkbox]
   final List<FormDynamicFieldOption> options;
 
+  /// Field dependency link
+  ///
+  final FormFieldDependencyLink? dependencyLink;
+
   /// Field is expanded
   /// default [false]
   final bool expanded;
+
+  /// If field copied default set to true
+  ///
+  /// default [false]
+  final bool copied;
 
   /// If field is checkbox or multible select
   /// selecteds items depends on [value]
@@ -88,7 +109,7 @@ class FormDynamicField with EquatableMixin {
   ///
   /// default [FormDynamicFieldType.text]
   FormDynamicFieldType get type => FormDynamicFieldType.values.firstWhere(
-        (e) => e.type == fieldType,
+        (e) => e.index == fieldType,
         orElse: () => FormDynamicFieldType.text,
       );
 
@@ -102,6 +123,7 @@ class FormDynamicField with EquatableMixin {
 
   FormDynamicField({
     String? id,
+    String? displayName,
     int? fieldType,
     int? seq,
     this.labelText,
@@ -118,8 +140,11 @@ class FormDynamicField with EquatableMixin {
     bool? canEdit,
     int? permissionType,
     bool? expanded,
+    bool? enabled,
+    bool? copied,
+    this.dependencyLink,
   })  : id = id ?? uuid,
-        fieldType = fieldType ?? FormDynamicFieldType.text.type,
+        fieldType = fieldType ?? FormDynamicFieldType.text.index,
         seq = seq ?? 0,
         maxLines = maxLines ?? 1,
         mandantory = mandantory ?? false,
@@ -127,28 +152,37 @@ class FormDynamicField with EquatableMixin {
         options = options ?? const <FormDynamicFieldOption>[],
         canEdit = canEdit ?? true,
         permissionType = permissionType ?? FormDynamicPermission.both.index,
-        expanded = expanded ?? false;
+        expanded = expanded ?? false,
+        enabled = enabled ?? true,
+        displayName = displayName ?? generateFieldName(fieldType),
+        copied = copied ?? false;
 
-  FormDynamicField copyWith(
-      {String? id,
-      int? fieldType,
-      int? seq,
-      String? labelText,
-      String? hintText,
-      String? value,
-      int? maxLength,
-      int? minLength,
-      int? maxLines,
-      int? minLines,
-      bool? mandantory,
-      bool? multiSelectable,
-      int? pickerMode,
-      List<FormDynamicFieldOption>? options,
-      bool? canEdit,
-      int? permissionType,
-      bool? expanded}) {
+  FormDynamicField copyWith({
+    String? id,
+    String? displayName,
+    int? fieldType,
+    int? seq,
+    String? labelText,
+    String? hintText,
+    String? value,
+    int? maxLength,
+    int? minLength,
+    int? maxLines,
+    int? minLines,
+    bool? mandantory,
+    bool? multiSelectable,
+    int? pickerMode,
+    List<FormDynamicFieldOption>? options,
+    bool? canEdit,
+    int? permissionType,
+    bool? expanded,
+    bool? enabled,
+    FormFieldDependencyLink? dependencyLink,
+    bool? copied,
+  }) {
     return FormDynamicField(
       id: id ?? this.id,
+      displayName: displayName ?? this.displayName,
       fieldType: fieldType ?? this.fieldType,
       seq: seq ?? this.seq,
       labelText: labelText ?? this.labelText,
@@ -165,6 +199,9 @@ class FormDynamicField with EquatableMixin {
       canEdit: canEdit ?? this.canEdit,
       permissionType: permissionType ?? this.permissionType,
       expanded: expanded ?? this.expanded,
+      enabled: enabled ?? this.enabled,
+      dependencyLink: dependencyLink ?? this.dependencyLink,
+      copied: copied ?? this.copied,
     );
   }
 
@@ -181,29 +218,58 @@ class FormDynamicField with EquatableMixin {
       }
       field.copyWith(value: copyValues.join(','), options: copyOptions);
     }
+    final encoded = jsonEncode({...field.toJson(), "": ""});
+    final decoded = FormDynamicField.fromJson(jsonDecode(encoded));
+    return decoded.copyWith(copied: true);
+  }
+
+  FormDynamicField setDependency(FormFieldDependencyLink? link) {
+    FormDynamicField field = copyWith();
+    final encoded = jsonEncode({...field.toJson(), "dependency_link": link});
+    final decoded = FormDynamicField.fromJson(jsonDecode(encoded));
+    return decoded.copyWith(expanded: field.expanded);
+  }
+
+  factory FormDynamicField.fromJson(Map<String, dynamic> json) {
+    FormDynamicField field = FormDynamicField(
+      id: json['id'],
+      displayName: json['display_name'],
+      fieldType: json['field_type'],
+      seq: json['seq'],
+      enabled: json['enabled'],
+      labelText: json['label_text'],
+      hintText: json['hint_text'],
+      value: json['value'],
+      maxLength: json['max_length'],
+      minLength: json['min_length'],
+      maxLines: json['max_lines'],
+      minLines: json['min_lines'],
+      mandantory: json['mandantory'],
+      multiSelectable: json['multi_selectable'],
+      canEdit: json['can_edit'],
+      permissionType: json['permission_type'],
+      pickerModeType: json['picker_mode_type'],
+    );
+
+    if (json['options'] != null) {
+      final options = List<FormDynamicFieldOption>.from(json['options'].map((e) => FormDynamicFieldOption.fromJson(json)));
+      field = field.copyWith(options: options);
+    }
+
+    if (json['dependency_link'] != null) {
+      field = field.copyWith(
+        dependencyLink: FormFieldDependencyLink.fromJson(json['dependency_link']),
+      );
+    }
     return field;
   }
 
-  @override
-  List<Object?> get props => [
-        id,
-        fieldType,
-        seq,
-        labelText,
-        hintText,
-        value,
-        maxLength,
-        maxLines,
-        minLines,
-        mandantory,
-        multiSelectable,
-        options,
-      ];
-
   Map<String, dynamic> toJson() => {
         "id": id,
+        "display_name": displayName,
         "field_type": fieldType,
         "seq": seq,
+        "enabled": enabled,
         "label_text": labelText,
         "hint_text": hintText,
         "value": value,
@@ -217,5 +283,25 @@ class FormDynamicField with EquatableMixin {
         "permission_type": permissionType,
         "picker_mode_type": pickerModeType,
         "options": options.map((e) => e.toJson()).toList(),
+        "dependency_link": dependencyLink?.toJson(),
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        displayName,
+        fieldType,
+        seq,
+        labelText,
+        hintText,
+        value,
+        maxLength,
+        maxLines,
+        minLines,
+        mandantory,
+        multiSelectable,
+        options,
+        enabled,
+        copied,
+      ];
 }

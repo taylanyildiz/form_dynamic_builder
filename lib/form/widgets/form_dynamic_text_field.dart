@@ -3,12 +3,10 @@ import '/core/widgets/widgets.dart';
 import '/core/models/models.dart';
 
 class FormDynamicTextField extends StatelessWidget {
-  const FormDynamicTextField({super.key, required this.field, this.withLabel = false});
-
-  /// Display label
-  ///
-  /// default [false]
-  final bool withLabel;
+  const FormDynamicTextField({
+    super.key,
+    required this.field,
+  });
 
   /// Dynamic field
   final FormDynamicField field;
@@ -51,7 +49,6 @@ class FormDynamicTextField extends StatelessWidget {
     Widget child = switch (type) {
       FormDynamicFieldType.header => const SizedBox.shrink(),
       FormDynamicFieldType.text => TextCustomField(
-          labelText: withLabel ? labelText : null,
           hintText: hintText,
           initialValue: value,
           mandantory: mandantory,
@@ -67,18 +64,19 @@ class FormDynamicTextField extends StatelessWidget {
         ),
       FormDynamicFieldType.dateTime => TextDateTimeField(
           mandantory: mandantory,
-          labelText: withLabel ? labelText : null,
           hintText: hintText,
           initialDate: value,
           onChanged: (dateTime) {},
         ),
-      FormDynamicFieldType.select when !multiSelectable => DropDownField(
-          labelText: withLabel ? labelText : null,
+      FormDynamicFieldType.select when !multiSelectable => DropdownField(
           items: options,
           value: selected,
           onChanged: (item) {},
-          itemBuilder: (value) {
-            return value?.value;
+          itemBuilder: (context, value, selected) {
+            return ListTile(
+              selected: selected,
+              title: Text(value.value),
+            );
           },
         ),
       FormDynamicFieldType.select => SizedBox(

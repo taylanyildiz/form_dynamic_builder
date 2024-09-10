@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
 import '/core/models/models.dart';
+import 'form_dynamic_field_dependency_link.dart';
 
 class FormDynamicFieldExpanded extends StatelessWidget {
   const FormDynamicFieldExpanded({
@@ -16,38 +17,96 @@ class FormDynamicFieldExpanded extends StatelessWidget {
   /// Field when changed
   final void Function(FormDynamicField field)? onChanged;
 
+  // field id
   String get id => field.id;
+
+  // field display name
+  String get displayName => field.displayName;
+
+  // enabled condition
+  bool get enabled => field.enabled;
+
+  // label text
   String get labelText => field.labelText ?? "";
+
+  // hint text
   String get hintText => field.hintText ?? "";
+
+  // value
   String? get value => field.value;
+
+  // Is required
   bool get mandantory => field.mandantory;
+
+  // field type enum
   FormDynamicFieldType get type => field.type;
+
+  // picker mode if field is date - time
   DateTimePickerMode get pickerMode => field.pickerMode;
+
+  // Is multi selectable
+  // If field is checkbox or select type
   bool get multiSelectable => field.multiSelectable;
+
+  // field options if field is checkbox or select type
   List<FormDynamicFieldOption> get options => field.options;
+
+  // field selected options
   List<FormDynamicFieldOption> get selecteds => field.selecteds;
+
+  // field selected option if field is select type and not multi-selectable
   FormDynamicFieldOption get selected => field.selected;
 
+  // field is header
   bool get isHeaderType => type == FormDynamicFieldType.header;
+
+  // field is checkbox
   bool get isCheckboxType => type == FormDynamicFieldType.checkbox;
+
+  // field is select
   bool get isSelectType => type == FormDynamicFieldType.select;
+
+  // field is text-field
   bool get isTextType => type == FormDynamicFieldType.text;
+
+  // field is date-tiem
   bool get isDateTimeType => type == FormDynamicFieldType.dateTime;
 
   @override
   Widget build(BuildContext context) {
-    if (isHeaderType) return _buildLabelTextField;
     return ColumnSeparator(
       separatorBuilder: (index) => const SizedBox(height: 3.0),
       children: [
-        _buildRequiredField,
-        _buildLabelTextField,
-        _buildHintTextField,
-        if (isDateTimeType) _buildPickerMode,
-        if (isDateTimeType) _buildDateTimePicker,
-        if (isTextType) _buildTextValueField,
-        if (isCheckboxType || isSelectType) _buildOptions,
+        _buildDisplayNameField,
+        Builder(
+          builder: (context) {
+            if (isHeaderType) return _buildLabelTextField;
+            return ColumnSeparator(
+              separatorBuilder: (index) => const SizedBox(height: 3.0),
+              children: [
+                if (!(isCheckboxType || (isSelectType && !multiSelectable))) _buildRequiredField,
+                if (!isHeaderType) FormDynamicFieldDependencyLink(fieldId: id),
+                _buildLabelTextField,
+                _buildHintTextField,
+                if (isDateTimeType) _buildPickerMode,
+                if (isDateTimeType) _buildDateTimePicker,
+                if (isTextType) _buildTextValueField,
+                if (isCheckboxType || isSelectType) _buildOptions,
+              ],
+            );
+          },
+        )
       ],
+    );
+  }
+
+  Widget get _buildDisplayNameField {
+    return Label(
+      label: "Display Name",
+      child: TextCustomField(
+        initialValue: displayName,
+        onChange: (input) => onChanged?.call(field.copyWith(displayName: input)),
+      ),
     );
   }
 
@@ -84,13 +143,19 @@ class FormDynamicFieldExpanded extends StatelessWidget {
   Widget get _buildPickerMode {
     return Label(
       label: "Type",
-      child: DropDownField(
+      child: DropdownField(
         items: DateTimePickerMode.values,
+        selectedBuilder: (context, selected) => Text(selected.title),
         value: pickerMode,
         onChanged: (value) {
-          onChanged?.call(field.copyWith(pickerMode: value?.index));
+          onChanged?.call(field.copyWith(pickerMode: value.firstOrNull?.index));
         },
-        itemBuilder: (value) => value?.title,
+        itemBuilder: (_, value, selected) {
+          return ListTile(
+            selected: selected,
+            title: Text(value.title),
+          );
+        },
       ),
     );
   }

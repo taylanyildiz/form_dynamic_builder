@@ -9,9 +9,6 @@ class FormSavedPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     final formDynamic = ref.read(formNotifierProvider);
     final fields = formDynamic.fields;
     return Scaffold(
@@ -29,11 +26,11 @@ class FormSavedPage extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(field.labelText ?? "-", style: textTheme.labelLarge),
-                    FormDynamicTextField(
-                      withLabel: false,
-                      field: field,
+                    FormDynamicFieldHeader(
+                      fieldId: field.id,
+                      label: field.labelText,
                     ),
+                    FormDynamicTextField(field: field),
                   ],
                 );
               },

@@ -7,7 +7,7 @@ extension StringNullTypeExtension on String? {
     try {
       return DateTime.parse(this!.trim());
     } catch (e) {
-      return null;
+      return DateTime.now();
     }
   }
 
@@ -31,8 +31,9 @@ extension StringNullTypeExtension on String? {
 
   /// Date parser to string by [mode]
   DateTime? toModeDate(DateTimePickerMode mode) {
+    final date = this ?? DateTime.now().toString();
     final data = switch (mode) {
-      DateTimePickerMode.time => parserTimeToDate(),
+      DateTimePickerMode.time => date.parserTimeToDate(),
       _ => toDate,
     };
     return data;

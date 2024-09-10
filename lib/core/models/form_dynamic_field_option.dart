@@ -22,9 +22,6 @@ class FormDynamicFieldOption with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [id, value];
-
-  @override
   String toString() {
     return "$id -> Value: $value";
   }
@@ -33,4 +30,17 @@ class FormDynamicFieldOption with EquatableMixin {
         "id": id,
         "value": value,
       };
+
+  factory FormDynamicFieldOption.fromJson(Map<String, dynamic> json) {
+    return FormDynamicFieldOption(
+      id: json['id'],
+      value: json['value'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        value,
+      ];
 }

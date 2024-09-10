@@ -58,7 +58,7 @@ class ImageCard extends StatelessWidget {
         );
       },
     );
-    return GestureDetector(
+    return InkWell(
       onTap: _onTap(),
       child: SizedBox(
         width: size,
@@ -103,7 +103,7 @@ class ImageCard extends StatelessWidget {
           Popover.confirm(
               title: "Warning!",
               description: "Are you sure want to remove this image?",
-              onChanged: (result) {
+              onTap: (result) {
                 if (!result) return;
                 onDelete.call();
               },

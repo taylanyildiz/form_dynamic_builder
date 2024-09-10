@@ -4,3 +4,5 @@ export 'form_field_preview_provider.dart';
 export 'form_field_provider.dart';
 export 'form_json_provider.dart';
 export 'form_page_provider.dart';
+export 'form_field_dependency_provider.dart';
+export 'linkable_fields_provider.dart';

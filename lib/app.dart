@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 import '/core/constants/constants.dart';
 import '/core/themes/themes.dart';
 import 'form/pages/form_page.dart';
@@ -8,15 +9,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: const Locale('en'),
-      navigatorKey: NavigatorConstants.navigatorKey,
-      debugShowCheckedModeBanner: false,
-      title: 'Form Dynamic Builder',
-      theme: LightTheme.theme,
-      darkTheme: DarkTheme.theme,
-      themeMode: ThemeMode.light,
-      home: const FormPage(),
+    return ToastificationWrapper(
+      child: MaterialApp(
+        locale: const Locale('en'),
+        navigatorKey: NavigatorConstants.navigatorKey,
+        debugShowCheckedModeBanner: false,
+        title: 'Form Dynamic Builder',
+        theme: LightTheme.theme,
+        darkTheme: DarkTheme.theme,
+        themeMode: ThemeMode.light,
+        home: const FormPage(),
+      ),
     );
   }
 }

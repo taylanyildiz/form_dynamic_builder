@@ -1,13 +1,30 @@
 enum FormDynamicFieldType {
-  // none(0),
-  header(1),
-  text(2),
-  checkbox(3),
-  dateTime(4),
-  select(5),
-  image(6),
+  /// Header
+  header,
+
+  /// text field
+  text,
+
+  /// checkbox
+  checkbox,
+
+  /// Date-Time
+  dateTime,
+
+  /// Select
+  select,
+
+  /// Image
+  image,
   ;
 
-  final int type;
-  const FormDynamicFieldType(this.type);
+  /// Title of
+  String get title => switch (this) {
+        FormDynamicFieldType.header => "Header",
+        FormDynamicFieldType.text => "Text",
+        FormDynamicFieldType.checkbox => "Checkbox",
+        FormDynamicFieldType.dateTime => "Date-Time",
+        FormDynamicFieldType.select => "Select",
+        FormDynamicFieldType.image => "Image",
+      };
 }

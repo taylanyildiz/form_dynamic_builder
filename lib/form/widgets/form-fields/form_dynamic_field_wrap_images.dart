@@ -103,7 +103,7 @@ class _FormDynamicFieldWrapImagesState extends State<FormDynamicFieldWrapImages>
                         child: Popover.confirm(
                           title: "Warning!",
                           description: "Are you sure want to remove this image?",
-                          onChanged: (result) {
+                          onTap: (result) {
                             if (!result) return;
                             options.removeAt(index);
                             widget.onChanged.call(options);
