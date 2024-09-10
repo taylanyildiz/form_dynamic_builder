@@ -13,7 +13,6 @@ typedef DropDownFieldSelectedBuilder<T> = Widget Function(BuildContext context, 
 
 /// Dropdown field compare
 ///
-///
 typedef DropDownCompareBuilder<T> = dynamic Function(T item);
 
 /// Dropdown field is there to help select item or items
@@ -56,7 +55,7 @@ class DropdownField<T> extends StatefulWidget {
               borderRadius: BorderRadius.all(Radius.circular(3.0)),
             ),
         insetPadding = insetPadding ?? const EdgeInsets.all(6.0),
-        constraints = constraints ?? const BoxConstraints(maxHeight: 400.0);
+        constraints = constraints ?? const BoxConstraints(maxHeight: 300.0);
 
   /// Label text
   ///
@@ -168,14 +167,14 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
 
   @override
   void didUpdateWidget(covariant DropdownField<T> oldWidget) {
-    if (widget.multiSelectable != oldWidget.multiSelectable) {
-      multiSelectable = widget.multiSelectable;
-    }
     if (!listEquals(widget.items, oldWidget.items)) {
       itemsNotifier.value = widget.items;
     }
 
-    if ((multiSelectable && listEquals(widget.value, oldWidget.value)) || (!multiSelectable && oldWidget.value != widget.value)) {
+    if (widget.multiSelectable != oldWidget.multiSelectable) {
+      multiSelectable = widget.multiSelectable;
+      _setSelecteds();
+    } else if ((multiSelectable && listEquals(widget.value, oldWidget.value)) || (!multiSelectable && oldWidget.value != widget.value)) {
       _setSelecteds();
     }
 
@@ -191,22 +190,22 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
     super.dispose();
   }
 
+  /// Set selected items
+  ///
   void _setSelecteds() {
-    WidgetsBinding.instance.scheduleFrameCallback((_) {
-      if (widget.value == null) {
-        selectedItemsNotifier.value = [];
-        return;
-      }
+    if (widget.value == null) {
+      selectedItemsNotifier.value = [];
+      return;
+    }
 
-      if (multiSelectable) {
-        selectedItemsNotifier.value = widget.value;
-      } else {
-        if (widget.value != null) {
-          List<T> selecteds = [widget.value];
-          selectedItemsNotifier.value = selecteds;
-        }
+    if (multiSelectable) {
+      selectedItemsNotifier.value = widget.value;
+    } else {
+      if (widget.value != null) {
+        List<T> selecteds = [widget.value];
+        selectedItemsNotifier.value = selecteds;
       }
-    });
+    }
   }
 
   /// Tap field
@@ -243,6 +242,8 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
     open = true;
   }
 
+  /// Close dropdown
+  ///
   void onCloseDropwdown() {
     if (!open) return; // Already dropdown is closed
     overlayEntry?.remove();
@@ -250,6 +251,9 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
     open = false;
   }
 
+  /// Tap item
+  ///
+  /// to select
   void onTapItem(T item) {
     if (!multiSelectable) {
       _onSingleSelect(item);
@@ -261,11 +265,15 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
     widget.onChanged?.call(selectedItemsNotifier.value);
   }
 
+  /// Single select item
+  ///
   void _onSingleSelect(T item) {
     selectedItemsNotifier.value = [item];
     fieldController.text = widget.compareBy?.call(item) ?? item.toString();
   }
 
+  /// Multi select item
+  ///
   void _onMultiSelect(T item) {
     final List<T> selecteds = [...selectedItemsNotifier.value];
     if (selecteds.contains(item)) {
@@ -339,10 +347,7 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
               spacing: 5.0,
               children: List.generate(value.length, (index) {
                 final item = value[index];
-                return widget.selectedBuilder?.call(context, item) ??
-                    Text(
-                      widget.compareBy?.call(item) ?? item.toString(),
-                    );
+                return widget.selectedBuilder?.call(context, item) ?? Text(widget.compareBy?.call(item) ?? item.toString());
               }),
             ),
           ),
@@ -351,6 +356,8 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
     );
   }
 
+  /// Dropdown field
+  ///
   Widget _buildDropdown(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final maxHeight = (size.height - fieldOffSiz!.$1.dy).abs() - fieldOffSiz!.$2.height;
@@ -364,8 +371,8 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
             width: fieldOffSiz?.$2.width,
             decoration: widget.dropdownDecoration,
             child: ListView.separated(
-              controller: scrollController,
               shrinkWrap: true,
+              controller: scrollController,
               padding: EdgeInsets.zero,
               itemCount: items.length,
               separatorBuilder: (context, index) => const SizedBox.shrink(),

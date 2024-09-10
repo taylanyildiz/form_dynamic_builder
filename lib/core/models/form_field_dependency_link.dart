@@ -194,7 +194,9 @@ class FormFieldDependencyContent with EquatableMixin {
   final String? fieldId;
 
   /// Field Depend value
-  final String? value;
+  ///
+  /// default empty
+  final String value;
 
   /// Dependency type enum
   /// default [FormDynamicDependencyType.empty]
@@ -207,9 +209,10 @@ class FormFieldDependencyContent with EquatableMixin {
     String? id,
     int? dependType,
     this.fieldId,
-    this.value,
+    String? value,
   })  : id = id ?? uuid,
-        dependType = dependType ?? FormDynamicDependencyType.empty.index;
+        dependType = dependType ?? FormDynamicDependencyType.empty.index,
+        value = value ?? "";
 
   FormFieldDependencyContent copyWith({
     String? id,
@@ -222,6 +225,21 @@ class FormFieldDependencyContent with EquatableMixin {
       dependType: dependType ?? this.dependType,
       fieldId: fieldId ?? this.fieldId,
       value: value ?? this.value,
+    );
+  }
+
+  /// If want to make value null
+  ///
+  /// set field to [true] default [false]
+  FormFieldDependencyContent copyWithNull({
+    bool fieldId = false,
+    bool value = false,
+  }) {
+    return FormFieldDependencyContent(
+      id: id,
+      dependType: dependType,
+      fieldId: fieldId ? null : this.fieldId,
+      value: value ? null : this.value,
     );
   }
 

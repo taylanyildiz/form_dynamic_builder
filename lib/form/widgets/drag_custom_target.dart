@@ -23,7 +23,7 @@ class DragCustomTarget extends ConsumerWidget {
     final fields = ref.read(formNotifierProvider.select((e) => e.fields));
     final formFieldPreviewNotifier = ref.read(formFieldPreviewProvider.notifier);
     return DragTarget<FormDynamicField>(
-      onLeave: index == null ? null : (data) => formNotifier.jumpToScroll(index!),
+      // onLeave: index == null ? null : (data) => formNotifier.jumpToScroll(index!),
       onAcceptWithDetails: (details) {
         formNotifier.onAddField(details.data);
       },

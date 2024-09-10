@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '/core/snackbar/app_snackbar.dart';
 import '/core/dialog/app_dialog.dart';
 import '/form/pages/pages.dart';
 import '../models/models.dart';
@@ -8,7 +9,9 @@ import '/core/models/models.dart';
 class FormNotifier extends Notifier<FormDynamic> {
   @override
   FormDynamic build() {
-    return FormDynamic();
+    return FormDynamic(
+      name: "Form Dynamic",
+    );
   }
 
   /// When Accept data
@@ -43,17 +46,34 @@ class FormNotifier extends Notifier<FormDynamic> {
 
   /// Copied item then insert last
   void onCopyField(FormDynamicField field) {
+    final duplicated = field.dublicate();
     state = state.copyWith(
-      fields: [
-        ...state.fields,
-        field.dublicate(),
-      ],
+      fields: [...state.fields, duplicated],
     );
+
+    Future.delayed(const Duration(seconds: 1)).then((_) {
+      final duplicatedField = ref.read(formFieldProvider(duplicated.id));
+      final duplicatedFieldNotifier = ref.read(formFieldProvider(duplicated.id).notifier);
+      if (duplicatedField.copied) {
+        duplicatedFieldNotifier.update((e) => e.copyWith(copied: false));
+      }
+    });
   }
 
   /// Delete field item
   void onDeleteField(FormDynamicField field) {
     List<FormDynamicField> fields = [...state.fields];
+    final fieldsFiltered = fields.where((e) => e.id != field.id);
+    final dependencies = fieldsFiltered.map((e) => ref.read(formFieldProvider(e.id).select((e) => e.dependencyLink))).whereType<FormFieldDependencyLink>().toList();
+    final contents = dependencies.expand((e) => e.depends).expand((e) => e.contents);
+    if (contents.any((e) => e.fieldId == field.id)) {
+      AppSnackbar.warning(
+        "Warning",
+        "This field is linked to another field. This field cannot be deleted without removing the link.",
+      );
+      return;
+    }
+
     fields = fields.where((e) => e.id != field.id).toList();
     state = state.copyWith(fields: fields);
   }
@@ -76,6 +96,10 @@ class FormNotifier extends Notifier<FormDynamic> {
   void Function()? onSave() {
     if (state.fields.isEmpty) return null;
     return () {
+      final fields = state.fields;
+      state = state.copyWith(
+        fields: fields.map((e) => ref.read(formFieldProvider(e.id))).toList(),
+      );
       ref.read(formPageProvider).jumpToPage(FormPages.saved.index);
     };
   }

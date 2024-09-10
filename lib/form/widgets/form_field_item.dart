@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_dynamic_builder/core/constants/constants.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
 import '/form/widgets/form-fields/form_fields.dart';
@@ -31,6 +32,7 @@ class FormFieldItem extends ConsumerWidget {
     FormDynamicFieldHolder holder = formDynamicFieldHolders.firstWhere((e) => e.type == item.type);
 
     return FormDynamicExpandableCard(
+      backgroundColor: item.copied ? ColorConstants.b50 : Colors.white,
       key: ValueKey("expanded-field-item-${item.id}"),
       initialExpanded: item.expanded,
       titleOnly: holder.type == FormDynamicFieldType.header,

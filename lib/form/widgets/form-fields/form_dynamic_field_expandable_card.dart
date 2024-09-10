@@ -6,6 +6,7 @@ class FormDynamicExpandableCard extends StatefulWidget {
   const FormDynamicExpandableCard({
     super.key,
     this.initialExpanded = false,
+    this.backgroundColor,
     required this.title,
     this.titleOnly = false,
     required this.collapsed,
@@ -21,6 +22,10 @@ class FormDynamicExpandableCard extends StatefulWidget {
   ///
   /// default [false]
   final bool initialExpanded;
+
+  /// Item background color
+  ///
+  final Color? backgroundColor;
 
   /// Header of panel
   final String title;
@@ -73,6 +78,7 @@ class _FormDynamicExpandableCardState extends State<FormDynamicExpandableCard> {
       onHover: (event) => setState(() => actions = true),
       onExit: (event) => setState(() => actions = false),
       child: Card(
+        color: widget.backgroundColor,
         child: ExpandableCard.builder(
           initiallyExpanded: widget.initialExpanded,
           onExpansionChanged: (value) {

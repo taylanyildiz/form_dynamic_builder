@@ -58,7 +58,7 @@ class ImageCard extends StatelessWidget {
         );
       },
     );
-    return GestureDetector(
+    return InkWell(
       onTap: _onTap(),
       child: SizedBox(
         width: size,

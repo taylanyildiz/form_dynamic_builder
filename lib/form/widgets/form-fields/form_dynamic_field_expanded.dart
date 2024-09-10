@@ -85,7 +85,7 @@ class FormDynamicFieldExpanded extends StatelessWidget {
               separatorBuilder: (index) => const SizedBox(height: 3.0),
               children: [
                 if (!(isCheckboxType || (isSelectType && !multiSelectable))) _buildRequiredField,
-                if (!(isHeaderType || isCheckboxType)) FormDynamicFieldDependencyLink(fieldId: id),
+                if (!isHeaderType) FormDynamicFieldDependencyLink(fieldId: id),
                 _buildLabelTextField,
                 _buildHintTextField,
                 if (isDateTimeType) _buildPickerMode,

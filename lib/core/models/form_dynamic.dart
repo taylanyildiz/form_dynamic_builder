@@ -7,35 +7,36 @@ class FormDynamic {
   /// default [uuid]
   final String id;
 
+  /// Form name
+  ///
+  final String? name;
+
   /// Form fields
   final List<FormDynamicField> fields;
 
-  /// Form dynamic dependencies
-  final List<FormFieldDependencyLink> dependencies;
-
   FormDynamic({
     String? id,
+    this.name,
     List<FormDynamicField>? fields,
     List<FormFieldDependencyLink>? dependencies,
   })  : id = id ?? uuid,
-        fields = fields ?? const <FormDynamicField>[],
-        dependencies = dependencies ?? const <FormFieldDependencyLink>[];
+        fields = fields ?? const <FormDynamicField>[];
 
   FormDynamic copyWith({
     String? id,
+    String? name,
     List<FormDynamicField>? fields,
-    List<FormFieldDependencyLink>? dependencies,
   }) {
     return FormDynamic(
       id: id ?? this.id,
+      name: name ?? this.name,
       fields: fields ?? this.fields,
-      dependencies: dependencies ?? this.dependencies,
     );
   }
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "name": name,
         "fields": fields.map((e) => e.toJson()).toList(),
-        "dependency_links": dependencies.map((e) => e.toJson()).toList(),
       };
 }

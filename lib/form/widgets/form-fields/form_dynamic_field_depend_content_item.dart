@@ -4,6 +4,7 @@ import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
 import '../../providers/providers.dart';
 import '/core/models/models.dart';
+import 'form_dynamic_dependency_field.dart';
 
 class FormDynamicFieldDependContentItem extends ConsumerWidget {
   const FormDynamicFieldDependContentItem({
@@ -34,7 +35,6 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
     final linkableFields = ref.watch(linkableFieldsProvider(fieldId));
     FormDynamicField? selectedField = linkableFields.firstWhere((e) => e.id == content.fieldId, orElse: () => FormDynamicField(id: "-1"));
     if (selectedField.id == "-1") selectedField = null;
-    // TODO If field deleted
     return Row(
       children: [
         Expanded(
@@ -96,7 +96,6 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
     };
     dependTypes.insert(0, FormDynamicDependencyType.enabled);
     final selected = dependTypes.firstWhere((e) => e == content.depend, orElse: () => dependTypes.first);
-    // TODO If field multiselectable changed
     return SizedBox(
       width: 130.0,
       child: DropdownField<FormDynamicDependencyType>(
@@ -119,21 +118,14 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
   Widget _buildValue(FormDynamicField field) {
     if ([FormDynamicDependencyType.empty, FormDynamicDependencyType.notEMpty, FormDynamicDependencyType.enabled].contains(content.depend)) return const SizedBox.shrink();
     final fieldType = field.type;
-    final dependType = content.depend;
 
-    return switch (fieldType) {
-      FormDynamicFieldType.text => TextCustomField(
-          hintText: "Value",
-          initialValue: content.value,
-          onChange: (input) {},
-        ),
-      FormDynamicFieldType.dateTime => TextDateTimeField(
-          hintText: "Value",
-          mode: field.pickerMode,
-          onChanged: (dateTime) {},
-        ),
-      FormDynamicFieldType.select => throw UnimplementedError(),
-      _ => const SizedBox.shrink(),
-    };
+    return FormDynamicDependencyField(
+      dependencyContent: content,
+      fieldType: fieldType,
+      fieldOptions: field.options,
+      onChanged: (value) {
+        onChanged.call(content.copyWith(value: value));
+      },
+    );
   }
 }
