@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "form-builder-9a43b-c8e4b",
+    "site": "csi-form-builder",
     "public": "build/web",
     "ignore": [
       "firebase.json",
