@@ -218,7 +218,7 @@ class FormDynamicField with EquatableMixin {
       }
       field.copyWith(value: copyValues.join(','), options: copyOptions);
     }
-    final encoded = jsonEncode({...field.toJson(), "": ""});
+    final encoded = jsonEncode({...field.toJson(), "dependency_link": null});
     final decoded = FormDynamicField.fromJson(jsonDecode(encoded));
     return decoded.copyWith(copied: true);
   }
@@ -252,7 +252,7 @@ class FormDynamicField with EquatableMixin {
     );
 
     if (json['options'] != null) {
-      final options = List<FormDynamicFieldOption>.from(json['options'].map((e) => FormDynamicFieldOption.fromJson(json)));
+      final options = List<FormDynamicFieldOption>.from(json['options'].map((e) => FormDynamicFieldOption.fromJson(e)));
       field = field.copyWith(options: options);
     }
 
