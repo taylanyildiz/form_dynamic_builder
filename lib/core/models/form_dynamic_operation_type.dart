@@ -1,13 +1,4 @@
 enum FormDynamicOperationType {
-  /// Target field
-  target,
-
-  /// Field
-  field,
-
-  /// Value
-  value,
-
   /// Addition [+]
   addition,
 

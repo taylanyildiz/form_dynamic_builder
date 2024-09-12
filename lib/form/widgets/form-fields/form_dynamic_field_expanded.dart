@@ -198,7 +198,11 @@ class FormDynamicFieldExpanded extends StatelessWidget {
               value: multiSelectable,
               title: const Text("Allow Multiple Selections"),
               onChanged: (value) {
-                onChanged?.call(field.copyWith(multiSelectable: value));
+                var copyField = field.copyWith(multiSelectable: value);
+                if (value == false && isSelectType && selecteds.length > 1) {
+                  copyField = copyField.copyWith(value: selecteds.first.id);
+                }
+                onChanged?.call(copyField);
               },
             ),
           ),
