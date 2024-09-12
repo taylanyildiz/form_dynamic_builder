@@ -10,6 +10,6 @@ enum FormDynamicOperationDependType {
 
   String get title => switch (this) {
         FormDynamicOperationDependType.field => "Field",
-        FormDynamicOperationDependType.handle => "Value",
+        FormDynamicOperationDependType.handle => "Handle",
       };
 }

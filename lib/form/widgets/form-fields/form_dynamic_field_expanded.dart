@@ -3,6 +3,7 @@ import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
 import '/core/models/models.dart';
 import 'form_dynamic_field_dependency_link.dart';
+import 'form_dynamic_field_operation_link.dart';
 
 class FormDynamicFieldExpanded extends StatelessWidget {
   const FormDynamicFieldExpanded({
@@ -174,12 +175,8 @@ class FormDynamicFieldExpanded extends StatelessWidget {
   }
 
   Widget get _buildTextValueField {
-    return Label(
-      label: "Value",
-      child: TextCustomField(
-        initialValue: value,
-        onChange: (input) => onChanged?.call(field.copyWith(value: input)),
-      ),
+    return FormDynamicFieldOperationLink(
+      fieldId: field.id,
     );
   }
 

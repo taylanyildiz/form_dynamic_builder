@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_dynamic_builder/core/models/models.dart';
 import '/core/constants/constants.dart';
-import '/form/providers/providers.dart';
 import '/core/widgets/widgets.dart';
-import 'form_dynamic_field_depend_content_item.dart';
-import 'form_field_logic_type_select.dart';
+import '../../providers/providers.dart';
+import 'form_dynamic_field_operation_content_item.dart';
 
-class FormDynamicFieldDependencyLink extends ConsumerWidget {
-  const FormDynamicFieldDependencyLink({
+class FormDynamicFieldOperationLink extends ConsumerWidget {
+  const FormDynamicFieldOperationLink({
     super.key,
     required this.fieldId,
   });
@@ -24,27 +24,28 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
     final field = ref.watch(formFieldProvider(fieldId));
     final fieldNotifier = ref.read(formFieldProvider(fieldId).notifier);
 
-    final fieldDependency = ref.watch(formFieldDependencyProvider(fieldId));
-    final fieldDependencyNotifier = ref.read(formFieldDependencyProvider(fieldId).notifier);
+    final fieldOperation = ref.watch(formFieldOperationProvider(fieldId));
+    final fieldOperationNotifier = ref.read(formFieldOperationProvider(fieldId).notifier);
 
     return ExpandableCard.builder(
-      key: ValueKey("dependency-field-card-$fieldId"),
-      initiallyExpanded: fieldDependency.isExpanded,
-      onExpansionChanged: (status) {
-        fieldDependencyNotifier.onChangedCardStatus(status);
-      },
+      key: ValueKey("operation-field-card-$fieldId"),
+      onExpansionChanged: fieldOperationNotifier.onChangedCardStatus,
+      initiallyExpanded: fieldOperation.isExpanded,
       builder: (controller) {
         return ExpandableCustomCardDelegate(
           title: Label(
-            label: "Enabled",
+            label: "Value",
             child: Row(
               children: [
-                Checkbox(
-                  value: field.enabled,
-                  onChanged: (value) {
-                    fieldNotifier.update((e) => e.copyWith(enabled: value));
-                  },
+                Expanded(
+                  child: TextCustomField(
+                    initialValue: field.value,
+                    onChange: (input) {
+                      fieldNotifier.update((e) => e.copyWith(value: input));
+                    },
+                  ),
                 ),
+                const SizedBox(width: 5.0),
                 Tooltip(
                   message: "Dependency Link",
                   child: IconCustomButton(
@@ -75,27 +76,27 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            "Dependencies",
+                            "Operations",
                             style: textTheme.titleMedium,
                           ),
                         ),
                         TextButton(
-                          onPressed: fieldDependencyNotifier.onClearAll(),
+                          onPressed: fieldOperationNotifier.onClearAll(),
                           child: const Text("Clear all"),
                         ),
                       ],
                     ),
-                    _buildDependencies,
+                    _buildOperations,
                     const SizedBox(height: 10.0),
                     PrimaryButton(
                       minimumSize: Size.zero,
-                      onPressed: fieldDependencyNotifier.onAddDependency,
+                      onPressed: fieldOperationNotifier.onAddOperation,
                       backgroundColor: Colors.transparent,
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.all(7.0),
                       radius: 3.0,
                       borderSide: BorderSide(width: 1.0, color: ColorConstants.gray200),
-                      title: "Add Dependency",
+                      title: "Add Operation",
                       titleStyle: textTheme.titleMedium?.copyWith(
                         fontSize: 13.0,
                       ),
@@ -111,23 +112,22 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
     );
   }
 
-  Widget get _buildDependencies {
+  Widget get _buildOperations {
     return Consumer(builder: (context, ref, child) {
-      final fieldDependencyNotifier = ref.read(formFieldDependencyProvider(fieldId).notifier);
+      final fieldOperationNotifier = ref.read(formFieldOperationProvider(fieldId).notifier);
+      final fieldOperation = ref.watch(formFieldOperationProvider(fieldId));
 
-      // field dependency
-      final fieldDependency = ref.watch(formFieldDependencyProvider(fieldId));
-      final targetLogicType = fieldDependency.logic;
-      final depends = fieldDependency.depends;
+      final targetOperationType = fieldOperation.operation;
+      final operations = fieldOperation.operations;
 
       return ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: depends.length,
+        itemCount: fieldOperation.operations.length,
         separatorBuilder: (context, index) => const SizedBox(height: 3.0),
         itemBuilder: (context, index) {
-          final depend = depends[index];
-          final contents = depend.contents;
+          final operation = fieldOperation.operations[index];
+          final contents = operation.contents;
           Widget card = Card(
             color: ColorConstants.gray100,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
@@ -144,61 +144,85 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
                     children: [
                       PrimaryButton(
                         minimumSize: Size.zero,
-                        onPressed: () => fieldDependencyNotifier.onAddContent(depend.id),
+                        onPressed: () => fieldOperationNotifier.onAddContent(operation.id),
                         backgroundColor: Colors.transparent,
                         foregroundColor: Colors.black,
                         padding: const EdgeInsets.all(7.0),
                         borderSide: BorderSide.none,
-                        title: "Add Nested Dependency",
+                        title: "Add Nested Operation",
                         icon: const Icon(Icons.add),
                       ),
                       TextButton(
-                        onPressed: fieldDependencyNotifier.onClearContents(depend.id),
+                        onPressed: fieldOperationNotifier.onClearContents(operation.id),
                         child: const Text("Clear all"),
                       ),
                     ],
                   );
                 }
                 final content = contents[index];
-                final contentItem = FormDynamicFieldDependContentItem(
-                  key: ValueKey("content-item-${content.id}"),
-                  fieldId: fieldId, // Target field id
-                  content: content,
-                  onChanged: fieldDependencyNotifier.onChangeContent(depend.id),
-                  onDelete: () => fieldDependencyNotifier.onDeleteContent(depend.id, content.id),
-                );
-                if (contents.length > 1) {
-                  return Row(
-                    children: [
-                      FormFieldLogicTypeSelect(
-                        logicType: depend.logic,
-                        editable: index == 0,
-                        onChanged: fieldDependencyNotifier.onChangeDepenLogicType(depend.id),
+
+                return Row(
+                  children: [
+                    if (contents.length > 1)
+                      SizedBox(
+                        width: 100.0,
+                        child: DropdownField(
+                          enabled: index == 0,
+                          onChanged: (items) {
+                            fieldOperationNotifier.onChangeOperationType.call(operation.id).call(items.first);
+                          },
+                          compareBy: (item) => item.title,
+                          items: FormDynamicOperationType.values,
+                          value: operation.operation,
+                          itemBuilder: (context, item, selected) {
+                            return ListTile(
+                              selected: selected,
+                              title: Text(item.title),
+                            );
+                          },
+                        ),
                       ),
-                      const SizedBox(width: 4.0),
-                      Expanded(child: contentItem),
-                    ],
-                  );
-                }
-                return contentItem;
+                    const SizedBox(width: 3.0),
+                    Expanded(
+                      child: FormDynamicFieldOperationContentItem(
+                        key: ValueKey("content-item-${content.id}"),
+                        fieldId: fieldId, // Target field id
+                        content: content,
+                        onChanged: fieldOperationNotifier.onChangeContent(operation.id),
+                        onDelete: () => fieldOperationNotifier.onDeleteContent(operation.id, content.id),
+                      ),
+                    )
+                  ],
+                );
               },
             ),
           );
 
-          if (depends.length > 1) {
-            return Row(
-              children: [
-                FormFieldLogicTypeSelect(
-                  logicType: targetLogicType,
-                  editable: index == 0,
-                  onChanged: fieldDependencyNotifier.onChangeTargetLogicType,
+          return Row(
+            children: [
+              if (operations.length > 1)
+                SizedBox(
+                  width: 100,
+                  child: DropdownField(
+                    enabled: index == 0,
+                    onChanged: (items) {
+                      fieldOperationNotifier.onChangeTargetOperationType.call(items.first);
+                    },
+                    compareBy: (item) => item.title,
+                    items: FormDynamicOperationType.values,
+                    value: targetOperationType,
+                    itemBuilder: (context, item, selected) {
+                      return ListTile(
+                        selected: selected,
+                        title: Text(item.title),
+                      );
+                    },
+                  ),
                 ),
-                const SizedBox(width: 4.0),
-                Expanded(child: card),
-              ],
-            );
-          }
-          return card;
+              const SizedBox(width: 3.0),
+              Expanded(child: card),
+            ],
+          );
         },
       );
     });

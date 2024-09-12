@@ -17,6 +17,6 @@ enum FormDynamicOperationType {
         FormDynamicOperationType.addition => "Add",
         FormDynamicOperationType.decrease => "Decrease",
         FormDynamicOperationType.multiplication => "Multiply",
-        FormDynamicOperationType.division => "divide",
+        FormDynamicOperationType.division => "Divide",
       };
 }

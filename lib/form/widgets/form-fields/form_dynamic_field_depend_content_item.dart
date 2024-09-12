@@ -32,7 +32,7 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final linkableFields = ref.watch(linkableFieldsProvider(fieldId));
+    final linkableFields = ref.watch(dependencyLinkableFieldsProvider(fieldId));
     FormDynamicField? selectedField = linkableFields.firstWhere((e) => e.id == content.fieldId, orElse: () => FormDynamicField(id: "-1"));
     if (selectedField.id == "-1") selectedField = null;
     return Row(

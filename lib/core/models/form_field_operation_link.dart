@@ -27,12 +27,12 @@ class FormFieldOperationLink with EquatableMixin {
   /// Field depend contents
   ///
   /// It gives [targetFieldId] depend which fields and which depend
-  final List<FormFieldOperaiton> operations;
+  final List<FormFieldOperation> operations;
 
   /// Operation type enum
   ///
   /// default [FormDynamicOperationType.addition]
-  FormDynamicOperationType get logic => FormDynamicOperationType.values.firstWhere(
+  FormDynamicOperationType get operation => FormDynamicOperationType.values.firstWhere(
         (e) => e.index == operationType,
         orElse: () => FormDynamicOperationType.addition,
       );
@@ -42,25 +42,25 @@ class FormFieldOperationLink with EquatableMixin {
     required this.targetFieldId,
     bool? isExpanded,
     int? operationType,
-    List<FormFieldOperaiton>? operations,
+    List<FormFieldOperation>? operations,
   })  : id = id ?? uuid,
         isExpanded = isExpanded ?? false,
         operationType = operationType ?? FormDynamicOperationType.addition.index,
-        operations = operations ?? const <FormFieldOperaiton>[];
+        operations = operations ?? const <FormFieldOperation>[];
 
   FormFieldOperationLink copyWith({
     String? id,
     String? targetFieldId,
     bool? isExpanded,
     int? operationType,
-    List<FormFieldOperaiton>? operations,
+    List<FormFieldOperation>? operations,
   }) {
     return FormFieldOperationLink(
       id: id ?? this.id,
       targetFieldId: targetFieldId ?? this.targetFieldId,
       isExpanded: isExpanded ?? this.isExpanded,
       operationType: operationType ?? this.operationType,
-      operations: operations ?? [],
+      operations: operations ?? this.operations,
     );
   }
 
@@ -71,7 +71,7 @@ class FormFieldOperationLink with EquatableMixin {
       operationType: json['operation_type'],
     );
     if (json['operations'] != null) {
-      final operations = List<FormFieldOperaiton>.from(json['depends'].map((e) => FormFieldOperaiton.fromJson(e)));
+      final operations = List<FormFieldOperation>.from(json['operations'].map((e) => FormFieldOperation.fromJson(e)));
       link = link.copyWith(operations: operations);
     }
     return link;
@@ -93,7 +93,7 @@ class FormFieldOperationLink with EquatableMixin {
       ];
 }
 
-class FormFieldOperaiton with EquatableMixin {
+class FormFieldOperation with EquatableMixin {
   /// Operation unique id
   ///
   final String id;
@@ -110,12 +110,12 @@ class FormFieldOperaiton with EquatableMixin {
   /// Operation type enum
   ///
   /// default [FormDynamicOperationType.addition]
-  FormDynamicOperationType get logic => FormDynamicOperationType.values.firstWhere(
+  FormDynamicOperationType get operation => FormDynamicOperationType.values.firstWhere(
         (e) => e.index == operationType,
         orElse: () => FormDynamicOperationType.addition,
       );
 
-  FormFieldOperaiton({
+  FormFieldOperation({
     String? id,
     List<FormFieldOperationContent>? contents,
     int? operationType,
@@ -123,20 +123,20 @@ class FormFieldOperaiton with EquatableMixin {
         contents = contents ?? const <FormFieldOperationContent>[],
         operationType = operationType ?? FormDynamicOperationType.addition.index;
 
-  FormFieldOperaiton copyWith({
+  FormFieldOperation copyWith({
     String? id,
     List<FormFieldOperationContent>? contents,
     int? operationType,
   }) {
-    return FormFieldOperaiton(
+    return FormFieldOperation(
       id: id ?? this.id,
       contents: contents ?? this.contents,
       operationType: operationType ?? this.operationType,
     );
   }
 
-  factory FormFieldOperaiton.fromJson(Map<String, dynamic> json) {
-    var operation = FormFieldOperaiton(
+  factory FormFieldOperation.fromJson(Map<String, dynamic> json) {
+    var operation = FormFieldOperation(
       id: json['id'],
       operationType: json['operation_type'],
     );
@@ -182,7 +182,7 @@ class FormFieldOperationContent with EquatableMixin {
 
   /// Depend type enum
   ///
-  FormDynamicOperationDependType get depend => FormDynamicOperationDependType.values.firstWhere(
+  FormDynamicOperationDependType? get depend => FormDynamicOperationDependType.values.firstWhere(
         (e) => e.index == dependType,
         orElse: () => FormDynamicOperationDependType.handle,
       );
@@ -206,6 +206,18 @@ class FormFieldOperationContent with EquatableMixin {
       fieldId: fieldId ?? (depend == FormDynamicOperationDependType.field ? this.fieldId : null),
       dependType: dependType ?? this.dependType,
       value: value ?? (depend == FormDynamicOperationDependType.handle ? this.value : null),
+    );
+  }
+
+  FormFieldOperationContent copyWithNull({
+    bool fieldId = false,
+    bool value = false,
+  }) {
+    return FormFieldOperationContent(
+      id: id,
+      dependType: dependType,
+      fieldId: fieldId ? null : this.fieldId,
+      value: value ? null : this.value,
     );
   }
 
