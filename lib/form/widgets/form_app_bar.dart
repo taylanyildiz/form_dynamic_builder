@@ -37,9 +37,15 @@ class FormAppBar extends StatelessWidget {
                     fit: BoxFit.cover,
                     "assets/svgs/videntium_logo.svg",
                   ),
-                  const Text(
-                    "Form Builder",
-                    style: TextStyle(color: Colors.white, fontSize: 25.0),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Form Builder",
+                        style: TextStyle(color: Colors.white, fontSize: 25.0),
+                      ),
+                      TextVersion()
+                    ],
                   ),
                 ],
               ),

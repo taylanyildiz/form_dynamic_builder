@@ -6,3 +6,4 @@ export 'column_separator.dart';
 export 'label.dart';
 export 'date-time/date_time.dart';
 export 'popover.dart';
+export 'text_version.dart';

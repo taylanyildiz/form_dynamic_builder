@@ -89,7 +89,7 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
                     const SizedBox(height: 10.0),
                     PrimaryButton(
                       minimumSize: Size.zero,
-                      onPressed: () => fieldDependencyNotifier.onAddDependency(),
+                      onPressed: fieldDependencyNotifier.onAddDependency,
                       backgroundColor: Colors.transparent,
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.all(7.0),
@@ -132,8 +132,8 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
             color: ColorConstants.gray100,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
             child: ListView.separated(
-              padding: const EdgeInsets.all(8.0),
               shrinkWrap: true,
+              padding: const EdgeInsets.all(8.0),
               physics: const NeverScrollableScrollPhysics(),
               itemCount: contents.length + 1,
               separatorBuilder: (context, index) => const SizedBox(height: 3.0),

@@ -55,12 +55,9 @@ class FormFieldDependencyNotifier extends AutoDisposeFamilyNotifier<FormFieldDep
   /// Add dependency
   ///
   void onAddDependency() {
-    state = state.copyWith(
-      depends: [
-        ...state.depends,
-        FormFieldDependency(contents: [FormFieldDependencyContent()]),
-      ],
-    );
+    final depends = [...state.depends];
+    depends.add(FormFieldDependency(contents: [FormFieldDependencyContent()]));
+    state = state.copyWith(depends: depends);
   }
 
   /// Add dependency content

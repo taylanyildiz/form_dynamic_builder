@@ -9,31 +9,8 @@ abstract final class FormHelper {
   /// * check depends
   /// * check all contents of each depends
   static FormFieldDependencyLink? simplifyDependency(FormFieldDependencyLink link) {
-    final depends = [...link.depends];
-    final allContens = depends.expand((e) => e.contents);
-    if (depends.isEmpty || allContens.isEmpty) return null;
-
-    for (var index = 0; index < depends.length; index++) {
-      final depend = depends[index];
-      final contents = [...depend.contents];
-
-      if (contents.isEmpty) {
-        depends.removeAt(index);
-        continue;
-      }
-
-      for (FormFieldDependencyContent content in contents) {
-        if (content.fieldId == null) {
-          contents.remove(content);
-          if (contents.isEmpty) {
-            depends.removeAt(index);
-            continue;
-          }
-          depends[index] = depends[index].copyWith(contents: contents);
-        }
-      }
-    }
+    Iterable<FormFieldDependency> depends = link.depends.map((e) => e.copyWith(contents: e.contents.where((e) => e.fieldId != null).toList())).where((e) => e.contents.isNotEmpty);
     if (depends.isEmpty) return null;
-    return link.copyWith(depends: depends);
+    return link.copyWith(depends: depends.toList());
   }
 }
