@@ -1,13 +1,4 @@
 enum FormDynamicOperationType {
-  /// Target field
-  target,
-
-  /// Field
-  field,
-
-  /// Value
-  value,
-
   /// Addition [+]
   addition,
 
@@ -19,4 +10,13 @@ enum FormDynamicOperationType {
 
   /// Division [/]
   division,
+  ;
+
+  /// Title of [type]
+  String get title => switch (this) {
+        FormDynamicOperationType.addition => "Add",
+        FormDynamicOperationType.decrease => "Decrease",
+        FormDynamicOperationType.multiplication => "Multiply",
+        FormDynamicOperationType.division => "Divide",
+      };
 }

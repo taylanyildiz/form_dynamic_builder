@@ -69,6 +69,10 @@ abstract class LightTheme {
           borderSide: BorderSide(color: ColorConstants.r400),
           borderRadius: BorderRadius.circular(4.0),
         ),
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
         hintStyle: LightStyle.hintStyle,
         errorStyle: LightStyle.errorStyle,
         iconColor: ColorConstants.gray500,

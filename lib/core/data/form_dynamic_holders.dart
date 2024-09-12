@@ -18,7 +18,7 @@ List<FormDynamicFieldHolder> get formDynamicFieldHolders => [
         type: FormDynamicFieldType.checkbox,
       ),
       FormDynamicFieldHolder(
-        icon: const Icon(Icons.check_circle_outline),
+        icon: const Icon(Icons.date_range),
         title: "DateTime",
         type: FormDynamicFieldType.dateTime,
       ),

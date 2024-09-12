@@ -38,14 +38,14 @@ class TextVersion extends ConsumerWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 3.0),
-            switch (version) {
-              AsyncData(value: var value) => Text(value),
-              _ => const SizedBox(
-                  height: 10,
-                  width: 10,
-                  child: CupertinoActivityIndicator(),
-                ),
-            },
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 30),
+              child: switch (version) {
+                AsyncData(value: var value) => Text(value),
+                AsyncError(error: var _) => const Text("—"),
+                _ => const CupertinoActivityIndicator(radius: 7.0),
+              },
+            ),
           ],
         ),
       ),

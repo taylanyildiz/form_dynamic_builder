@@ -3,30 +3,8 @@ import '../utils/functions.dart';
 import 'form_dynamic_dependency_type.dart';
 import 'form_dynamic_logic_type.dart';
 
-/// Dependency expample
-/// ```json
-// {
-///   "id": 1,
-///   "target_field_id": 1,
-///   "logic_type": 1,
-///   "depends": [
-///     {
-///       "logic_type": 2,
-///       "depends": [{}, {}]
-///     },
-///     {
-///       "logic_type": 1,
-///       "depends": [
-///         {
-///           "depend_type": 1,
-///           "field_id": 2,
-///           "value": 3
-///         }
-///       ]
-///     }
-///   ]
-/// }
-/// ```
+/// Dependency of Field
+///
 class FormFieldDependencyLink with EquatableMixin {
   /// Depend id
   final String id;
@@ -52,6 +30,7 @@ class FormFieldDependencyLink with EquatableMixin {
   final List<FormFieldDependency> depends;
 
   /// Logic type enum
+  ///
   /// default [FormDynamicLogicType.and]
   FormDynamicLogicType get logic => FormDynamicLogicType.values.firstWhere(
         (e) => e.index == logicType,
@@ -60,8 +39,8 @@ class FormFieldDependencyLink with EquatableMixin {
 
   FormFieldDependencyLink({
     String? id,
-    bool? isExpanded,
     required this.targetFieldId,
+    bool? isExpanded,
     int? logicType,
     List<FormFieldDependency>? depends,
   })  : id = id ?? uuid,

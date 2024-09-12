@@ -65,8 +65,12 @@ class FormNotifier extends Notifier<FormDynamic> {
     List<FormDynamicField> fields = [...state.fields];
     final fieldsFiltered = fields.where((e) => e.id != field.id);
     final dependencies = fieldsFiltered.map((e) => ref.read(formFieldProvider(e.id).select((e) => e.dependencyLink))).whereType<FormFieldDependencyLink>().toList();
-    final contents = dependencies.expand((e) => e.depends).expand((e) => e.contents);
-    if (contents.any((e) => e.fieldId == field.id)) {
+    final dependencyContents = dependencies.expand((e) => e.depends).expand((e) => e.contents);
+
+    final operations = fieldsFiltered.map((e) => ref.read(formFieldProvider(e.id).select((e) => e.operationLink))).whereType<FormFieldOperationLink>().toList();
+    final operationContents = operations.expand((e) => e.operations).expand((e) => e.contents);
+
+    if (dependencyContents.any((e) => e.fieldId == field.id) || operationContents.any((e) => e.fieldId == field.id)) {
       AppSnackbar.warning(
         "Warning",
         "This field is linked to another field. This field cannot be deleted without removing the link.",

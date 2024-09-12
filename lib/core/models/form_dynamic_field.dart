@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../utils/enum_helper.dart';
 import '/core/models/models.dart';
 import '../utils/functions.dart';
+import 'form_field_operation_link.dart';
 
 class FormDynamicField with EquatableMixin {
   /// Field id
@@ -84,6 +85,10 @@ class FormDynamicField with EquatableMixin {
   ///
   final FormFieldDependencyLink? dependencyLink;
 
+  /// Field operation link
+  ///
+  final FormFieldOperationLink? operationLink;
+
   /// Field is expanded
   /// default [false]
   final bool expanded;
@@ -143,6 +148,7 @@ class FormDynamicField with EquatableMixin {
     bool? enabled,
     bool? copied,
     this.dependencyLink,
+    this.operationLink,
   })  : id = id ?? uuid,
         fieldType = fieldType ?? FormDynamicFieldType.text.index,
         seq = seq ?? 0,
@@ -178,6 +184,7 @@ class FormDynamicField with EquatableMixin {
     bool? expanded,
     bool? enabled,
     FormFieldDependencyLink? dependencyLink,
+    FormFieldOperationLink? operationLink,
     bool? copied,
   }) {
     return FormDynamicField(
@@ -201,6 +208,7 @@ class FormDynamicField with EquatableMixin {
       expanded: expanded ?? this.expanded,
       enabled: enabled ?? this.enabled,
       dependencyLink: dependencyLink ?? this.dependencyLink,
+      operationLink: operationLink ?? this.operationLink,
       copied: copied ?? this.copied,
     );
   }
@@ -218,7 +226,11 @@ class FormDynamicField with EquatableMixin {
       }
       field.copyWith(value: copyValues.join(','), options: copyOptions);
     }
-    final encoded = jsonEncode({...field.toJson(), "dependency_link": null});
+    final encoded = jsonEncode({
+      ...field.toJson(),
+      "dependency_link": null,
+      "operation_link": null,
+    });
     final decoded = FormDynamicField.fromJson(jsonDecode(encoded));
     return decoded.copyWith(copied: true);
   }
@@ -226,6 +238,13 @@ class FormDynamicField with EquatableMixin {
   FormDynamicField setDependency(FormFieldDependencyLink? link) {
     FormDynamicField field = copyWith();
     final encoded = jsonEncode({...field.toJson(), "dependency_link": link});
+    final decoded = FormDynamicField.fromJson(jsonDecode(encoded));
+    return decoded.copyWith(expanded: field.expanded);
+  }
+
+  FormDynamicField setOperation(FormFieldOperationLink? link) {
+    FormDynamicField field = copyWith();
+    final encoded = jsonEncode({...field.toJson(), "operation_link": link});
     final decoded = FormDynamicField.fromJson(jsonDecode(encoded));
     return decoded.copyWith(expanded: field.expanded);
   }
@@ -261,6 +280,12 @@ class FormDynamicField with EquatableMixin {
         dependencyLink: FormFieldDependencyLink.fromJson(json['dependency_link']),
       );
     }
+
+    if (json['operation_link'] != null) {
+      field = field.copyWith(
+        operationLink: FormFieldOperationLink.fromJson(json['operation_link']),
+      );
+    }
     return field;
   }
 
@@ -284,6 +309,7 @@ class FormDynamicField with EquatableMixin {
         "picker_mode_type": pickerModeType,
         "options": options.map((e) => e.toJson()).toList(),
         "dependency_link": dependencyLink?.toJson(),
+        "operation_link": operationLink?.toJson(),
       };
 
   @override

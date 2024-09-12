@@ -35,7 +35,6 @@ class DropdownField<T> extends StatefulWidget {
     this.mandantory = false,
     this.multiSelectable = false,
     BoxConstraints? constraints,
-    Decoration? decoration,
     Decoration? dropdownDecoration,
     EdgeInsetsGeometry? insetPadding,
     this.selectedBuilder,
@@ -44,18 +43,19 @@ class DropdownField<T> extends StatefulWidget {
     required this.itemBuilder,
     this.compareBy,
     this.onChanged,
-  })  : decoration = decoration ??
-            const BoxDecoration(
-              color: Color.fromARGB(255, 225, 223, 223),
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
-            ),
-        dropdownDecoration = dropdownDecoration ??
+    this.enabled = true,
+  })  : dropdownDecoration = dropdownDecoration ??
             const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(3.0)),
             ),
         insetPadding = insetPadding ?? const EdgeInsets.all(6.0),
         constraints = constraints ?? const BoxConstraints(maxHeight: 300.0);
+
+  /// Field enabled
+  ///
+  /// default [true]
+  final bool enabled;
 
   /// Label text
   ///
@@ -77,11 +77,6 @@ class DropdownField<T> extends StatefulWidget {
   /// Dropdown list constraints
   ///
   final BoxConstraints constraints;
-
-  /// Dropdown field decoration
-  ///
-  ///
-  final Decoration decoration;
 
   /// Dropdown list decoration
   ///
@@ -288,6 +283,7 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final inputTheme = theme.inputDecorationTheme;
+    final border = (widget.enabled ? inputTheme.enabledBorder : inputTheme.disabledBorder as OutlineInputBorder?);
     return CompositedTransformTarget(
       link: link,
       child: Column(
@@ -303,23 +299,24 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
           GestureDetector(
             onTap: onTapField,
             key: fieldKey,
-            child: Container(
-              alignment: Alignment.center,
+            child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 30.0),
-              padding: widget.insetPadding,
-              decoration: (widget.decoration as BoxDecoration?)?.copyWith(
+              child: Card(
                 color: inputTheme.fillColor,
-                border: Border.all(
-                  width: inputTheme.border?.borderSide.width ?? 1,
-                  color: inputTheme.border?.borderSide.color ?? Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: border?.borderSide ?? BorderSide.none,
+                  borderRadius: BorderRadius.circular(4.0),
                 ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: _buildPrefix),
-                  const Icon(Icons.keyboard_arrow_down),
-                ],
+                child: Padding(
+                  padding: widget.insetPadding ?? EdgeInsets.zero,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _buildPrefix),
+                      if (widget.enabled) const Icon(Icons.keyboard_arrow_down),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -336,7 +333,9 @@ class _DropdownFieldState<T> extends State<DropdownField<T>> {
         return Theme(
           data: theme.copyWith(
             textTheme: theme.textTheme.copyWith(
-              bodyMedium: theme.textTheme.labelMedium,
+              bodyMedium: theme.textTheme.labelMedium?.copyWith(
+                color: widget.enabled ? null : Colors.grey,
+              ),
             ),
           ),
           child: Material(
