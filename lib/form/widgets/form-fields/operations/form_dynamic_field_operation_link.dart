@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:form_dynamic_builder/core/models/models.dart';
+import '/core/models/models.dart';
 import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
-import '../../providers/providers.dart';
+import '../../../providers/providers.dart';
 import 'form_dynamic_field_operation_content_item.dart';
 
 class FormDynamicFieldOperationLink extends ConsumerWidget {
@@ -163,7 +163,7 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
 
                 return Row(
                   children: [
-                    if (contents.length > 1)
+                    if (contents.length > 1) ...[
                       SizedBox(
                         width: 100.0,
                         child: DropdownField(
@@ -182,14 +182,14 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
                           },
                         ),
                       ),
+                    ],
                     const SizedBox(width: 3.0),
                     Expanded(
                       child: FormDynamicFieldOperationContentItem(
                         key: ValueKey("content-item-${content.id}"),
                         fieldId: fieldId, // Target field id
+                        operationId: operation.id,
                         content: content,
-                        onChanged: fieldOperationNotifier.onChangeContent(operation.id),
-                        onDelete: () => fieldOperationNotifier.onDeleteContent(operation.id, content.id),
                       ),
                     )
                   ],
@@ -200,7 +200,7 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
 
           return Row(
             children: [
-              if (operations.length > 1)
+              if (operations.length > 1) ...[
                 SizedBox(
                   width: 100,
                   child: DropdownField(
@@ -219,6 +219,7 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
                     },
                   ),
                 ),
+              ],
               const SizedBox(width: 3.0),
               Expanded(child: card),
             ],

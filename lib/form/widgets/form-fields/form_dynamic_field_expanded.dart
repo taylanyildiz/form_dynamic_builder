@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
 import '/core/models/models.dart';
-import 'form_dynamic_field_dependency_link.dart';
-import 'form_dynamic_field_operation_link.dart';
+import 'dependencies/dependencies.dart';
+import 'operations/operations.dart';
 
 class FormDynamicFieldExpanded extends StatelessWidget {
   const FormDynamicFieldExpanded({

@@ -1,36 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:form_dynamic_builder/core/widgets/widgets.dart';
-import '../../../core/constants/constants.dart';
-import '../../providers/providers.dart';
+import '/core/widgets/widgets.dart';
+import '/core/constants/constants.dart';
+import '../../../providers/providers.dart';
 import '/core/models/models.dart';
 
 class FormDynamicFieldOperationContentItem extends ConsumerWidget {
   const FormDynamicFieldOperationContentItem({
     super.key,
     required this.fieldId,
+    required this.operationId,
     required this.content,
-    required this.onChanged,
-    required this.onDelete,
   });
 
   /// Field unique id
   ///
   final String fieldId;
 
+  /// Operaiton id
+  ///
+  final String operationId;
+
   /// Operation content
   final FormFieldOperationContent content;
 
-  /// Changed content
-  ///
-  final void Function(FormFieldOperationContent content) onChanged;
-
-  /// Delete content
-  ///
-  final void Function() onDelete;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fieldOperationNotifier = ref.read(formFieldOperationProvider(fieldId).notifier);
+
     final linkableFields = ref.watch(operationLinkableFieldsProvider(fieldId));
     FormDynamicField? selectedField = linkableFields.firstWhere((e) => e.id == content.fieldId, orElse: () => FormDynamicField(id: "-1"));
     if (selectedField.id == "-1") selectedField = null;
@@ -44,7 +41,10 @@ class FormDynamicFieldOperationContentItem extends ConsumerWidget {
                 width: 200,
                 child: DropdownField(
                   compareBy: (item) => item.title,
-                  onChanged: (items) => onChanged.call(content.copyWith(dependType: items.firstOrNull?.index)),
+                  onChanged: (items) {
+                    final copyContent = content.copyWith(dependType: items.firstOrNull?.index);
+                    fieldOperationNotifier.onChangeContent(operationId).call(copyContent);
+                  },
                   items: FormDynamicOperationDependType.values,
                   value: content.depend,
                   itemBuilder: (context, item, selected) {
@@ -61,7 +61,12 @@ class FormDynamicFieldOperationContentItem extends ConsumerWidget {
                   child: TextCustomField(
                     hintText: "Value",
                     initialValue: content.value,
-                    onChange: (input) => onChanged.call(content.copyWith(value: input)),
+                    onChange: (input) {
+                      var copyContent = content.copyWith(value: input);
+                      if (input?.isEmpty ?? true) copyContent = content.copyWithNull(value: true);
+
+                      fieldOperationNotifier.onChangeContent(operationId).call(copyContent);
+                    },
                   ),
                 ),
               ],
@@ -70,7 +75,9 @@ class FormDynamicFieldOperationContentItem extends ConsumerWidget {
                   child: DropdownField(
                     items: linkableFields,
                     value: selectedField,
-                    onChanged: (items) => onChanged.call(content.copyWith(fieldId: items.firstOrNull?.id)),
+                    onChanged: (items) {
+                      fieldOperationNotifier.onChangeContent(operationId).call(content.copyWith(fieldId: items.firstOrNull?.id));
+                    },
                     compareBy: (item) => item.displayName,
                     itemBuilder: (context, item, selected) {
                       return ListTile(
@@ -86,7 +93,9 @@ class FormDynamicFieldOperationContentItem extends ConsumerWidget {
         ),
         const SizedBox(width: 4.0),
         IconCustomButton(
-          onPressed: onDelete,
+          onPressed: () {
+            fieldOperationNotifier.onDeleteContent(operationId, content.id);
+          },
           icon: const Icon(Icons.delete_outline),
           color: ColorConstants.gray600,
           hoveredForegroundColor: ColorConstants.r400,

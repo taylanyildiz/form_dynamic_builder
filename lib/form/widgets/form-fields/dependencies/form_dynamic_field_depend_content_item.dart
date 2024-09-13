@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '/core/constants/constants.dart';
 import '/core/widgets/widgets.dart';
-import '../../providers/providers.dart';
+import '../../../providers/providers.dart';
 import '/core/models/models.dart';
 import 'form_dynamic_dependency_field.dart';
 
@@ -10,31 +10,29 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
   const FormDynamicFieldDependContentItem({
     super.key,
     required this.fieldId,
+    required this.dependId,
     required this.content,
-    required this.onChanged,
-    required this.onDelete,
   });
 
   /// Target field id
   final String fieldId;
 
+  /// Dependency id
+  ///
+  final String dependId;
+
   /// Dependency Content
   ///
   final FormFieldDependencyContent content;
 
-  /// Changed content
-  ///
-  final void Function(FormFieldDependencyContent content) onChanged;
-
-  /// Delete content
-  ///
-  final void Function() onDelete;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fieldDependencyNotifier = ref.read(formFieldDependencyProvider(fieldId).notifier);
+
     final linkableFields = ref.watch(dependencyLinkableFieldsProvider(fieldId));
     FormDynamicField? selectedField = linkableFields.firstWhere((e) => e.id == content.fieldId, orElse: () => FormDynamicField(id: "-1"));
     if (selectedField.id == "-1") selectedField = null;
+
     return Row(
       children: [
         Expanded(
@@ -46,7 +44,9 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
                   hintText: "Field",
                   selectedBuilder: (context, selected) => Text(selected.displayName),
                   onChanged: (item) {
-                    onChanged.call(content.copyWith(fieldId: item.firstOrNull?.id));
+                    fieldDependencyNotifier.onChangeContent(dependId).call(
+                          content.copyWith(fieldId: item.firstOrNull?.id),
+                        );
                   },
                   items: linkableFields,
                   value: selectedField,
@@ -61,20 +61,32 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
               if (selectedField != null)
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
-                  child: _buildDependType(selectedField.type, selectedField.multiSelectable),
+                  child: _buildDependType(
+                    selectedField.type,
+                    selectedField.multiSelectable,
+                    (content) {
+                      fieldDependencyNotifier.onChangeContent(dependId).call(content);
+                    },
+                  ),
                 ),
               if (selectedField != null)
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5.0),
-                    child: _buildValue(selectedField),
+                    child: _buildValue(
+                      (content) {
+                        fieldDependencyNotifier.onChangeContent(dependId).call(content);
+                      },
+                    ),
                   ),
                 ),
             ],
           ),
         ),
         IconCustomButton(
-          onPressed: onDelete,
+          onPressed: () {
+            fieldDependencyNotifier.onDeleteContent(dependId, content.id);
+          },
           icon: const Icon(Icons.delete_outline),
           color: ColorConstants.gray600,
           hoveredForegroundColor: ColorConstants.r400,
@@ -84,7 +96,11 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildDependType(FormDynamicFieldType type, bool multiSelectable) {
+  Widget _buildDependType(
+    FormDynamicFieldType type,
+    bool multiSelectable,
+    void Function(FormFieldDependencyContent content) onChanged,
+  ) {
     List<FormDynamicDependencyType> dependTypes = switch (type) {
       FormDynamicFieldType.checkbox => [],
       FormDynamicFieldType.select when !multiSelectable => FormDynamicDependencyType.values.where((e) => ![FormDynamicDependencyType.great.index, FormDynamicDependencyType.less.index, FormDynamicDependencyType.enabled.index].contains(e.index)).toList(),
@@ -115,17 +131,15 @@ class FormDynamicFieldDependContentItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildValue(FormDynamicField field) {
+  Widget _buildValue(
+    void Function(FormFieldDependencyContent content) onChanged,
+  ) {
     if ([FormDynamicDependencyType.empty, FormDynamicDependencyType.notEMpty, FormDynamicDependencyType.enabled].contains(content.depend)) return const SizedBox.shrink();
-    final fieldType = field.type;
 
     return FormDynamicDependencyField(
-      dependencyContent: content,
-      fieldType: fieldType,
-      fieldOptions: field.options,
-      onChanged: (value) {
-        onChanged.call(content.copyWith(value: value));
-      },
+      fieldId: fieldId,
+      dependId: dependId,
+      content: content,
     );
   }
 }

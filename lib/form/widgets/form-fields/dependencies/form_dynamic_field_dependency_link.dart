@@ -4,7 +4,7 @@ import '/core/constants/constants.dart';
 import '/form/providers/providers.dart';
 import '/core/widgets/widgets.dart';
 import 'form_dynamic_field_depend_content_item.dart';
-import 'form_field_logic_type_select.dart';
+import '../form_field_logic_type_select.dart';
 
 class FormDynamicFieldDependencyLink extends ConsumerWidget {
   const FormDynamicFieldDependencyLink({
@@ -160,45 +160,41 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
                   );
                 }
                 final content = contents[index];
-                final contentItem = FormDynamicFieldDependContentItem(
-                  key: ValueKey("content-item-${content.id}"),
-                  fieldId: fieldId, // Target field id
-                  content: content,
-                  onChanged: fieldDependencyNotifier.onChangeContent(depend.id),
-                  onDelete: () => fieldDependencyNotifier.onDeleteContent(depend.id, content.id),
-                );
-                if (contents.length > 1) {
-                  return Row(
-                    children: [
+                return Row(
+                  children: [
+                    if (contents.length > 1) ...[
                       FormFieldLogicTypeSelect(
                         logicType: depend.logic,
                         editable: index == 0,
                         onChanged: fieldDependencyNotifier.onChangeDepenLogicType(depend.id),
                       ),
-                      const SizedBox(width: 4.0),
-                      Expanded(child: contentItem),
                     ],
-                  );
-                }
-                return contentItem;
+                    Expanded(
+                      child: FormDynamicFieldDependContentItem(
+                        key: ValueKey("content-item-${content.id}"),
+                        fieldId: fieldId, // Target field id
+                        content: content,
+                        dependId: depend.id,
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
           );
 
-          if (depends.length > 1) {
-            return Row(
-              children: [
+          return Row(
+            children: [
+              if (depends.length > 1)
                 FormFieldLogicTypeSelect(
                   logicType: targetLogicType,
                   editable: index == 0,
                   onChanged: fieldDependencyNotifier.onChangeTargetLogicType,
                 ),
-                const SizedBox(width: 4.0),
-                Expanded(child: card),
-              ],
-            );
-          }
-          return card;
+              const SizedBox(width: 4.0),
+              Expanded(child: card),
+            ],
+          );
         },
       );
     });
