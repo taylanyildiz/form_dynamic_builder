@@ -183,7 +183,7 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
                         ),
                       ),
                     ],
-                    const SizedBox(width: 3.0),
+                    const SizedBox(width: 4.0),
                     Expanded(
                       child: FormDynamicFieldOperationContentItem(
                         key: ValueKey("content-item-${content.id}"),
@@ -220,7 +220,7 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
                   ),
                 ),
               ],
-              const SizedBox(width: 3.0),
+              const SizedBox(width: 4.0),
               Expanded(child: card),
             ],
           );

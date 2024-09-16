@@ -169,6 +169,7 @@ class FormDynamicFieldDependencyLink extends ConsumerWidget {
                         onChanged: fieldDependencyNotifier.onChangeDepenLogicType(depend.id),
                       ),
                     ],
+                    const SizedBox(width: 4.0),
                     Expanded(
                       child: FormDynamicFieldDependContentItem(
                         key: ValueKey("content-item-${content.id}"),
