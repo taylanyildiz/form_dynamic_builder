@@ -47,7 +47,7 @@ class FormDynamicFieldOperationLink extends ConsumerWidget {
                 ),
                 const SizedBox(width: 5.0),
                 Tooltip(
-                  message: "Dependency Link",
+                  message: "Operation Link",
                   child: IconCustomButton(
                     onPressed: () {
                       controller.toggle();
