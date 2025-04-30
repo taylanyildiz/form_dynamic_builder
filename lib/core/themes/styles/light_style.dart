@@ -21,7 +21,7 @@ class LightStyle extends TextTheme {
   /// Input field hint style
   static TextStyle get hintStyle => GoogleFonts.inter(
         fontSize: 12.0,
-        color: ColorConstants.gray700.withOpacity(.7),
+        color: ColorConstants.gray700.withValues(alpha: .7),
       );
 
   /// Input field error style

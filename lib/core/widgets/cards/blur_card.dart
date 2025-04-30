@@ -10,7 +10,7 @@ class BlurCard extends StatelessWidget {
     double? radius,
     BorderRadius? borderRadius,
   })  : blur = blur ?? (5.0, 5.0),
-        color = color ?? Colors.white.withOpacity(.4),
+        color = color ?? Colors.white.withValues(alpha: .4),
         borderRadius = borderRadius ?? (radius != null ? BorderRadius.circular(radius) : BorderRadius.zero),
         assert(borderRadius == null || radius == null);
 
@@ -22,7 +22,7 @@ class BlurCard extends StatelessWidget {
   final (double sigmaX, double sigmaY) blur;
 
   /// Blur color
-  /// default[Colors.white.withOpacity(.4)]
+  /// default[Colors.white.withValues(alpha: .4)]
   final Color color;
 
   /// Border radius

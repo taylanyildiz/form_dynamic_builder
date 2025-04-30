@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "csi-form-builder",
+    "site": "form-builder-flutter",
     "public": "build/web",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

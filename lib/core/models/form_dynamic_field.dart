@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import '../utils/enum_helper.dart';
 import '/core/models/models.dart';
 import '../utils/functions.dart';
-import 'form_field_operation_link.dart';
 
 class FormDynamicField with EquatableMixin {
   /// Field id

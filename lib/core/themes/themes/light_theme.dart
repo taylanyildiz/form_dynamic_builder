@@ -193,7 +193,7 @@ abstract class LightTheme {
   static DrawerThemeData get _drawerTheme => DrawerThemeData(
         backgroundColor: Colors.white,
         elevation: 0.0,
-        scrimColor: Colors.black.withOpacity(.5),
+        scrimColor: Colors.black.withValues(alpha: .5),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.horizontal(left: Radius.circular(4.0)),
         ),
@@ -273,7 +273,7 @@ abstract class LightTheme {
           if (states.contains(WidgetState.selected)) {
             return ColorConstants.tc600;
           }
-          return const Color(0xff1D1B20).withOpacity(.12);
+          return const Color(0xff1D1B20).withValues(alpha: .12);
         }),
         trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
       );

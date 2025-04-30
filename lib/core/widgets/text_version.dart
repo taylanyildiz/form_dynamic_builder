@@ -32,6 +32,7 @@ class TextVersion extends ConsumerWidget {
         color: Colors.transparent,
         elevation: 0.0,
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
               "Version",

@@ -26,7 +26,7 @@ class FormEmptyBox extends StatelessWidget {
           margin: EdgeInsets.zero,
           elevation: 0.0,
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero, side: BorderSide.none),
-          color: hasPreview ? Colors.blue.withOpacity(.3) : Colors.white.withOpacity(.1),
+          color: hasPreview ? Colors.blue.withValues(alpha: .3) : Colors.white.withValues(alpha: .1),
           child: const Center(
             child: Text(
               "Drag a field from the right to this area",

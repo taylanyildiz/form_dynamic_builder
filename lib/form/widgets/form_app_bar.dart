@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import '/core/widgets/widgets.dart';
 
 class FormAppBar extends StatelessWidget {
@@ -28,26 +27,18 @@ class FormAppBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 150.0) + const EdgeInsets.only(top: 15.0),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SvgPicture.asset(
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                    "assets/svgs/videntium_logo.svg",
-                  ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Form Builder",
-                        style: TextStyle(color: Colors.white, fontSize: 25.0),
-                      ),
-                      TextVersion()
-                    ],
-                  ),
-                ],
+              const Align(
+                alignment: Alignment.centerRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Form Builder",
+                      style: TextStyle(color: Colors.white, fontSize: 25.0),
+                    ),
+                    TextVersion()
+                  ],
+                ),
               ),
               const SizedBox(height: 10.0),
               Text(

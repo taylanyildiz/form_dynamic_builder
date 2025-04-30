@@ -352,7 +352,7 @@ class _TextCustomFieldState extends State<TextCustomField> {
           selectionControls: kIsWeb
               ? null
               : CustomSelectionControls(
-                  theme.textSelectionTheme.selectionHandleColor ?? Colors.blue.withOpacity(.3),
+                  theme.textSelectionTheme.selectionHandleColor ?? Colors.blue.withValues(alpha: .3),
                 ),
           autovalidateMode: validateMode,
           onTap: widget.onTap,

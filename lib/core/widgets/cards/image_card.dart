@@ -90,7 +90,7 @@ class ImageCard extends StatelessWidget {
 
   Widget get _buildActions {
     return BlurCard(
-      color: Colors.white.withOpacity(.4),
+      color: Colors.white.withValues(alpha: .4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

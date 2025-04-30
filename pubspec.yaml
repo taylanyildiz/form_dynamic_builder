@@ -21,7 +21,6 @@ dependencies:
   logger: ^2.4.0
   image_picker: ^1.1.2
   syncfusion_flutter_datepicker: ^26.2.10
-  flutter_svg: ^2.0.10+1
   toastification: ^2.2.0
   package_info_plus: ^8.0.2
 
@@ -36,4 +35,3 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/svgs/

@@ -14,6 +14,6 @@ class FormFieldGhost extends SizedBox {
         margin: EdgeInsets.zero,
         elevation: 0.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0), side: BorderSide.none),
-        color: Colors.blue.withOpacity(.5),
+        color: Colors.blue.withValues(alpha: .5),
       );
 }
